@@ -8,10 +8,15 @@
     "start": "next start"
   },
   "dependencies": {
+    "antd": "^4.0.2",
+    "bootstrap": "^4.4.1",
     "next": "9.3.0",
     "next-offline": "^5.0.0",
     "next-pwa": "^2.3.0",
     "react": "16.13.0",
-    "react-dom": "16.13.0"
+    "react-dom": "16.13.0",
+    "react-redux": "^7.2.0",
+    "reactstrap": "^8.4.1",
+    "redux": "^4.0.5"
   }
 }

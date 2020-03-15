@@ -1,10 +1,11 @@
 import Head from 'next/head'
+import Headers from '../components/Headers'
 
 const Home = () => (
-  <div className="container">
+  <div>
+    <Headers />
     <Head>
       <title>Create Next App</title>
-      <link rel="icon" href="/favicon.ico" />
     </Head>
 
     <main>
