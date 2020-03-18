@@ -52,7 +52,7 @@ class LoginForm extends Component {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            label="Username"
+            label="Usernames"
             name="username"
             rules={[
               {
