@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 import reducers from '../reducers'
 import ls from 'local-storage'
 
-
+const store = createStore(reducers)
 export class index extends Component {
   constructor(props){
     super(props);
@@ -19,8 +19,6 @@ export class index extends Component {
     
   }
   render() {
-    const store = createStore(reducers)
-    // console.log(store.getState());
     
     return (
       <Provider store={store}>
