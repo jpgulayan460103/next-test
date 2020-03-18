@@ -15,7 +15,7 @@ export class index extends Component {
     this.state = {
       
     }
-    ls.set('key', 'value')
+    ls.set('user', 'value')
     
   }
   render() {

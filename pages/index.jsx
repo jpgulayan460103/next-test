@@ -4,11 +4,12 @@ import Headers from '../components/Headers'
 import Menus from '../components/Menus'
 import LoginForm from '../components/LoginForm'
 import { createStore, combineReducers } from 'redux'
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux'
 import reducers from '../reducers'
 import ls from 'local-storage'
 
-const store = createStore(reducers)
+const store = createStore(reducers, composeWithDevTools())
 export class index extends Component {
   constructor(props){
     super(props);

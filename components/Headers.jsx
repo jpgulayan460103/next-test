@@ -20,12 +20,18 @@ class Headers extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      isLogged: "12312312312",
+      isLogged: false,
+      accessToken: "",
+      user: {},
     };
     this.toggle = this.toggle.bind(this);
   }
   toggle = () => {
     this.setState({isOpen: !this.state.isOpen});
+  }
+  componentWillReceiveProps(nextProps){
+    this.setState({ accessToken: nextProps.accessToken})
+    this.setState({ formErrors: nextProps.formErrors})
   }
   render() {
     return (
@@ -54,7 +60,7 @@ class Headers extends Component {
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem>
-                  Reset { this.props.isLogged }
+                  Reset
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
@@ -69,6 +75,7 @@ class Headers extends Component {
 
 const mapStateToProps = (state) => ({
   isLogged: state.user.isLogged,
-  hasLogged: state.user.hasLogged,
+  accessToken: state.user.accessToken,
+  user: state.user.user,
 });
 export default connect(mapStateToProps)(Headers);

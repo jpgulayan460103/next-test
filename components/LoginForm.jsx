@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
+import API from '../api'
 
 function mapStateToProps(state) {
   return {
@@ -29,10 +30,35 @@ class LoginForm extends Component {
     this.state = {
       
     }
+    this.handleTest = this.handleTest.bind(this);
+  }
+  handleTest() {
+    API.User.getUsers()
+      .then(res => {
+        
+      })
+      .catch(err => {
+
+      })
+      .then(res => {})
   }
   render() {
     const onFinish = values => {
       console.log('Success:', values);
+      API.User.login(values)
+      .then(res => {
+        this.props.dispatch({
+          type: "USER_LOGIN_SUCCESSFUL",
+          data: res.data
+        });
+      })
+      .catch(err => {
+        this.props.dispatch({
+          type: "USER_LOGIN_FAILED",
+          data: err
+        });
+      })
+      .then(res => {})
     };
   
     const onFinishFailed = errorInfo => {
@@ -52,7 +78,7 @@ class LoginForm extends Component {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            label="Usernames"
+            label="Username"
             name="username"
             rules={[
               {
@@ -82,6 +108,12 @@ class LoginForm extends Component {
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit" size="large" block>
               Login
+            </Button>
+          </Form.Item>
+
+          <Form.Item {...tailLayout}>
+            <Button type="primary" htmlType="button" size="large" onClick={() => this.handleTest() } block>
+              test
             </Button>
           </Form.Item>
         </Form>
