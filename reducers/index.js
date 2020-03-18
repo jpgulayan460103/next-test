@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux'
-import todos from './todos'
+import user from './userReducer'
 import visibilityFilter from './visibilityFilter'
 
 const rootReducer = combineReducers({
-  todos,
+  user,
   visibilityFilter
 })
 

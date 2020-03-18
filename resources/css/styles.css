@@ -1,3 +1,7 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
 .site-layout .site-layout-background {
   background: #fff;
 }
@@ -9,4 +13,7 @@
   width: 200px;
   float: left;
   margin-right: 5px;
+}
+.ant-layout-sider {
+  float: left;
 }

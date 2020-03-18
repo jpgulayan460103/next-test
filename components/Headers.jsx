@@ -68,6 +68,7 @@ class Headers extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isLogged: state.isLoggedParent,
+  isLogged: state.user.isLogged,
+  hasLogged: state.user.hasLogged,
 });
 export default connect(mapStateToProps)(Headers);

@@ -1,26 +1,39 @@
+import Head from 'next/head'
 import React, { Component } from 'react';
-import { Slider, Switch } from 'antd';
 import Headers from '../components/Headers'
+import Menus from '../components/Menus'
+import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import reducers from '../reducers'
+import ls from 'local-storage'
 
-class About extends Component {
+
+export class index extends Component {
   constructor(props){
-      super(props);
-      this.state = {
-          searchText:"asdasdasd",
-          disabled: false,
-      };
+    super(props);
+    this.state = {
+      
+    }
+    ls.set('key', 'value')
+    
   }
   render() {
-    const { disabled } = this.state;
+    const store = createStore(reducers)
+    // console.log(store.getState());
+    
     return (
-      <div>
+      <Provider store={store}>
+        <Head>
+          <title>Create Next App</title>
+        </Head>
         <Headers />
-        <Slider defaultValue={30} disabled={disabled} />
-        <Slider range defaultValue={[20, 50]} disabled={disabled} />
-        Disabled: <Switch size="small" checked={disabled} onChange={this.handleDisabledChange} />
-      </div>
+        <Menus />
+        <div className="container-fluid">
+          
+        </div>
+      </Provider>
     );
   }
 }
 
-export default About;
+export default index;
