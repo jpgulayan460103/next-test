@@ -17,3 +17,6 @@
 .ant-layout-sider {
   float: left;
 }
+body{
+  padding-top: 70px;
+}

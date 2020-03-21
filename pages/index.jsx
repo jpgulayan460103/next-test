@@ -3,21 +3,15 @@ import React, { Component } from 'react';
 import Headers from '../components/Headers'
 import Menus from '../components/Menus'
 import LoginForm from '../components/LoginForm'
-import { createStore, combineReducers } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux'
-import reducers from '../reducers'
-import ls from 'local-storage'
+import store from '../store'
 
-const store = createStore(reducers, composeWithDevTools())
 export class index extends Component {
   constructor(props){
     super(props);
     this.state = {
       
     }
-    ls.set('key', 'value12348776812734');
-    
   }
   render() {
     
@@ -28,7 +22,6 @@ export class index extends Component {
         </Head>
         <Headers />
         <Menus />
-        <br />
         <div className="container-fluid">
           <div className="row justify-content-center">
             <div className="col-md-4">

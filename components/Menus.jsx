@@ -14,7 +14,7 @@ export class Menus extends Component {
   };
   render() {
     return (
-      <div>
+      <div style={{position:'fixed',zIndex:'299999'}}>
         <Sider
             breakpoint="lg"
             collapsedWidth="0"
@@ -45,6 +45,7 @@ export class Menus extends Component {
               </Menu.Item>
             </Menu>
           </Sider>
+          <br />
       </div>
     );
   }

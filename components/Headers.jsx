@@ -19,53 +19,68 @@ class Headers extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isOpen: false,
-      isLogged: false,
       accessToken: "",
-      user: {},
+      isLogged: false,
     };
     this.toggle = this.toggle.bind(this);
+    this.loggedState = this.loggedState.bind(this);
+  }
+  static getDerivedStateFromProps(props, state) {
+    return {
+      isLogged: props.isLogged,
+      accessToken: props.accessToken,
+    };
   }
   toggle = () => {
     this.setState({isOpen: !this.state.isOpen});
   }
-  componentWillReceiveProps(nextProps){
-    this.setState({ accessToken: nextProps.accessToken})
-    this.setState({ formErrors: nextProps.formErrors})
+  loggedState = () => {
+    if(this.state.isLogged){
+      return (
+        <UncontrolledDropdown nav inNavbar>
+          <DropdownToggle nav caret>
+            Options
+          </DropdownToggle>
+          <DropdownMenu right>
+            <DropdownItem>
+              Option 1
+            </DropdownItem>
+            <DropdownItem>
+              Option 2
+            </DropdownItem>
+            <DropdownItem divider />
+            <DropdownItem>
+              Logout
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      )
+    }else{
+      return (
+        <NavItem>
+          <NavLink href="/login">Login</NavLink>
+        </NavItem>
+      )
+    }
   }
   render() {
     return (
       <div>
-      <Navbar color="light" light expand="md">
+      <Navbar color="light" light expand="md" fixed="top">
         <NavbarBrand href="/">reactstrap</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/components/">Components</NavLink>
+              <NavLink href="/about">About</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
             </NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Options
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>
-                  Option 1
-                </DropdownItem>
-                <DropdownItem>
-                  Option 2
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>
-                  Reset
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
           </Nav>
-          <NavbarText>Simple Text</NavbarText>
+          <Nav navbar>
+            {this.loggedState()}
+          </Nav>
         </Collapse>
       </Navbar>
     </div>
