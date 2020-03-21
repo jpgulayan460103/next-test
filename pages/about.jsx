@@ -5,6 +5,7 @@ import Menus from '../components/Menus'
 import LoginForm from '../components/LoginForm'
 import { Provider } from 'react-redux'
 import store from '../store'
+import Router from 'next/router'
 
 export class index extends Component {
   constructor(props){
@@ -12,6 +13,9 @@ export class index extends Component {
     this.state = {
       
     }
+  }
+  componentDidMount(){
+    // window.location ='http://example.com'
   }
   render() {
     

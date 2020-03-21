@@ -19,6 +19,8 @@ const userLoginDetail = () => {
 export default function user(state = initialState(), action) {
   if(ls('user') != null){
     state = userLoginDetail();
+  }else{
+    
   }
   switch (action.type) {
     case 'USER_LOGIN_SUCCESSFUL':
