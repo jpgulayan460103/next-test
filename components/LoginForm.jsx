@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import API from '../api'
+import Router from 'next/router'
 
 function mapStateToProps(state) {
   return {
@@ -31,8 +32,10 @@ class LoginForm extends Component {
       
     }
     this.handleTest = this.handleTest.bind(this);
+    this.onFinish = this.onFinish.bind(this);
+    this.onFinishFailed = this.onFinishFailed.bind(this);
   }
-  handleTest() {
+  handleTest = () => {
     API.User.getUsers()
       .then(res => {
         
@@ -42,28 +45,29 @@ class LoginForm extends Component {
       })
       .then(res => {})
   }
+  onFinish = values => {
+    console.log('Success:', values);
+    API.User.login(values)
+    .then(res => {
+      this.props.dispatch({
+        type: "USER_LOGIN_SUCCESSFUL",
+        data: res.data
+      });
+      Router.push('/')
+    })
+    .catch(err => {
+      this.props.dispatch({
+        type: "USER_LOGIN_FAILED",
+        data: err
+      });
+      Router.push('/login')
+    })
+    .then(res => {})
+  }
+  onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  }
   render() {
-    const onFinish = values => {
-      console.log('Success:', values);
-      API.User.login(values)
-      .then(res => {
-        this.props.dispatch({
-          type: "USER_LOGIN_SUCCESSFUL",
-          data: res.data
-        });
-      })
-      .catch(err => {
-        this.props.dispatch({
-          type: "USER_LOGIN_FAILED",
-          data: err
-        });
-      })
-      .then(res => {})
-    };
-  
-    const onFinishFailed = errorInfo => {
-      console.log('Failed:', errorInfo);
-    };
     return (
       <div>
         <img src="/images/logo.jpg" className="h-40 w-45 rounded-full mx-auto" alt=""/>
@@ -74,8 +78,8 @@ class LoginForm extends Component {
           initialValues={{
             remember: true,
           }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
+          onFinish={this.onFinish}
+          onFinishFailed={this.onFinishFailed}
         >
           <Form.Item
             label="Username"

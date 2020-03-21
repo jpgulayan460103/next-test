@@ -6,7 +6,7 @@ import { Provider } from 'react-redux'
 import store from '../../store'
 import { useRouter } from 'next/router'
 
-const Post = () => {
+const Posts = () => {
   const router = useRouter()
   const { pid } = router.query
   return (
@@ -20,7 +20,7 @@ const Post = () => {
           <div className="row justify-content-center">
             <div className="col-md-4">
               <LoginForm />
-              Post: {pid}
+              Posts: {pid}
             </div>
           </div>
         </div>
@@ -28,4 +28,4 @@ const Post = () => {
   );
 }
 
-export default Post;
+export default Posts;
