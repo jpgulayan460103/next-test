@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Router from 'next/router'
 import {
   Collapse,
   Navbar,
@@ -14,6 +15,8 @@ import {
   DropdownItem,
   NavbarText
 } from 'reactstrap';
+import { CaretDownOutlined } from '@ant-design/icons';
+import Link from 'next/link'
 
 class Headers extends Component {
   constructor(props){
@@ -24,6 +27,8 @@ class Headers extends Component {
     };
     this.toggle = this.toggle.bind(this);
     this.loggedState = this.loggedState.bind(this);
+    this.logout = this.logout.bind(this);
+    this.redirect = this.redirect.bind(this);
   }
   static getDerivedStateFromProps(props, state) {
     return {
@@ -38,8 +43,8 @@ class Headers extends Component {
     if(this.state.isLogged){
       return (
         <UncontrolledDropdown nav inNavbar>
-          <DropdownToggle nav caret>
-            Options
+          <DropdownToggle nav>
+            {this.props.user.username} <CaretDownOutlined />
           </DropdownToggle>
           <DropdownMenu right>
             <DropdownItem>
@@ -50,7 +55,7 @@ class Headers extends Component {
             </DropdownItem>
             <DropdownItem divider />
             <DropdownItem>
-              Logout
+              <NavLink href="#" onClick={() => this.logout() }>Logout</NavLink>
             </DropdownItem>
           </DropdownMenu>
         </UncontrolledDropdown>
@@ -58,21 +63,33 @@ class Headers extends Component {
     }else{
       return (
         <NavItem>
-          <NavLink href="/login">Login</NavLink>
+          <NavLink href="/login" onClick={() => this.logout}>Login</NavLink>
         </NavItem>
       )
     }
+  }
+  logout = () => {
+    this.props.dispatch({
+      type: "USER_LOGIN_FAILED",
+      data: {}
+    });
+    Router.push('/login')
+  }
+  redirect = (redirectTo) => {
+    Router.push(`/${redirectTo}`)
   }
   render() {
     return (
       <div>
       <Navbar color="light" light expand="md" fixed="top">
-        <NavbarBrand href="/">reactstrap</NavbarBrand>
+        <NavbarBrand href="#"  onClick={() => this.redirect('') }>Panabo
+        </NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/about">About</NavLink>
+              <NavLink href="#" onClick={() => this.redirect('about') }>About
+              </NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>

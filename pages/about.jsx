@@ -23,9 +23,61 @@ export class index extends Component {
       <Provider store={store}>
         <Layouts>
           <div className="container-fluid">
-            <div className="row justify-content-center">
+            <div className="row">
               <div className="col-md-4">
                 <LoginForm />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
+                about <br />
                 about <br />
                 about <br />
                 about <br />

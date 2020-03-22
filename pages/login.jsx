@@ -4,6 +4,7 @@ import LoginForm from '../components/LoginForm'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
+import Router from 'next/router'
 
 export class index extends Component {
   constructor(props){

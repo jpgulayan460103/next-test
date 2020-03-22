@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
-import { LockOutlined } from '@ant-design/icons';
 import API from '../api'
 import Router from 'next/router'
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 function mapStateToProps(state) {
   return {
@@ -69,7 +69,7 @@ class LoginForm extends Component {
   }
   render() {
     return (
-      <div>
+      <div className="pt-16">
         <img src="/images/logo.jpg" className="h-40 w-45 rounded-full mx-auto" alt=""/>
         <Form
           {...layout}
@@ -91,7 +91,7 @@ class LoginForm extends Component {
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Type your username" prefix={<UserOutlined />} />
           </Form.Item>
 
           <Form.Item
@@ -104,7 +104,7 @@ class LoginForm extends Component {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Type your password" prefix={<LockOutlined />} />
           </Form.Item>
 
           
