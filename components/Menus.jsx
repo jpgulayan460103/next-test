@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -18,7 +19,7 @@ const Menus = () => {
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
               <UserOutlined />
-              <span>Option 1</span>
+              <span>Residents</span>
             </Menu.Item>
             <Menu.Item key="2">
               <UserOutlined />
@@ -28,7 +29,7 @@ const Menus = () => {
               key="sub1"
               title={
                 <span>
-                  <UserOutlined />
+                  <span className="pr-2"><FontAwesomeIcon icon="users" /></span>
                   <span>User</span>
                 </span>
               }

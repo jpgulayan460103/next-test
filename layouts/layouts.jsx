@@ -12,7 +12,7 @@ import { Layout, BackTop  } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
 
 
-const Post = ({children}) => {
+const Layouts = ({children}) => {
   useEffect(() => {
     let user = ls('user');
     if(user){
@@ -46,5 +46,4 @@ const Post = ({children}) => {
     </Provider>
   );
 }
-
-export default Post;
+export default Layouts;
