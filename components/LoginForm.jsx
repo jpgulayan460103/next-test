@@ -70,7 +70,7 @@ class LoginForm extends Component {
   render() {
     return (
       <div className="pt-16">
-        <img src="/images/logo.jpg" className="h-40 w-45 rounded-full mx-auto" alt=""/>
+        <img src="/images/logo.png" className="h-40 w-40 rounded-full mx-auto" alt=""/>
         <Form
           {...layout}
           name="basic"

@@ -14,3 +14,17 @@
 .logo{
   height: 60px;
 }
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+.navbar-brand>img {
+  padding: 0px;
+}
+.navbar, .navbar-expand-md, .navbar-light, .bg-light{
+  padding: 0px;
+}
+
+.site-back-top-basic {
+  color: rgba(64, 64, 64, 0.6);
+}

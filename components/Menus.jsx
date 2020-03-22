@@ -5,11 +5,16 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const Menus = () => {
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <React.Fragment>
-        <Sider     collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
-          <div className="logo" />
+        <Sider breakpoint="lg" collapsedWidth="0" collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)} onBreakpoint={broken => {console.log(broken)}}>
+          <br />
+          <br />
+          <div className="logo mr-1"  >
+          <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/>
+          </div>
+          {(!collapsed ? (<div className="mb-32 pb-2"></div>)  : (<div className="mb-2 pb-2"></div>)   )}
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
               <UserOutlined />

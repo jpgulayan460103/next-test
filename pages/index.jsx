@@ -17,13 +17,7 @@ export class index extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          <div className="container-fluid">
-            <div className="row justify-content-center">
-              <div className="col-md-4">
-                
-              </div>
-            </div>
-          </div>
+          
         </Layouts>
       </Provider>
     );
