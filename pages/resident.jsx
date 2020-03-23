@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
 
-export class index extends Component {
+export class residentIndex extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -17,11 +17,11 @@ export class index extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          {/* <Resident /> */}
+          <Resident />
         </Layouts>
       </Provider>
     );
   }
 }
 
-export default index;
+export default residentIndex;

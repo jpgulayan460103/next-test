@@ -1,12 +1,18 @@
 import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
-import { Form, Input, Button, Checkbox, Select, DatePicker } from 'antd';
+import { useRouter } from 'next/router'
+import { Form, Input, Button, Checkbox, Select, DatePicker, Typography } from 'antd';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import queryString from "query-string";
+
+const { Title } = Typography;
 const { Option } = Select;
+
 
 function mapStateToProps(state) {
   return {
@@ -25,16 +31,48 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 const ResidentForm = (props) => {
+
   const [barangay, setBarangay] = useState({});
+  const [formType, setformType] = useState("create");
   const [formData, setFormData] = useState({is_registered_voter:"YES"});
   const [contactNumber, setContactNumber] = useState([]);
+  const formRef = React.useRef();
+  const router = useRouter()
+  router.query = queryString.parse(router.asPath.split(/\?/)[1]);
+  const { id } = router.query
+  
   useEffect(() => {
     getBarangay();
+    if(id){
+      setformType("update");
+      getResident(id);
+    }
   }, []);
   const getBarangay = () => {
     API.Resident.getBarangay()
     .then(res => {
       setBarangay(res.data.options[0].cities[0].barangays);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .then(res => {
+      // console.log(barangay);
+    })
+    ;
+  }
+  const getResident = (id) => {
+    API.Resident.get(id)
+    .then(res => {
+      let resident = res.data.residents;
+      resident.birth_date = moment(resident.birth_date, "MM-DD-YYYY");
+      resident.voters_registration_date = moment(resident.voters_registration_date, "MM-DD-YYYY");
+      setFormData({
+        ...resident
+      })
+      formRef.current.setFieldsValue({
+        ...resident
+      });
     })
     .catch(err => {
       console.log(err);
@@ -57,19 +95,33 @@ const ResidentForm = (props) => {
       ...e
     })
   }
-  const onFinish = (value) => {
+  const formSubmit = (value) => {
     formData.contact_number = contactNumber;
-    API.Resident.add(formData)
-    .then(res => {
-      
-    })
-    .catch(err => {
-      props.dispatch({
-        type: "RESIDENT_FORM_ERROR",
-        data: err.response.data
+    if(formType == "create"){
+      API.Resident.add(formData)
+      .then(res => {
+        
       })
-    })
-    .then(res => {})
+      .catch(err => {
+        props.dispatch({
+          type: "RESIDENT_FORM_ERROR",
+          data: err.response.data
+        })
+      })
+      .then(res => {})
+    }else{
+      API.Resident.update(formData,id)
+      .then(res => {
+        
+      })
+      .catch(err => {
+        props.dispatch({
+          type: "RESIDENT_FORM_ERROR",
+          data: err.response.data
+        })
+      })
+      .then(res => {})
+    }
   }
   const displayErrors = (field) => {
     if(props.formError[field]){
@@ -82,9 +134,13 @@ const ResidentForm = (props) => {
   const populateBarangaySelection = (barangay) => {
     let items = [];
     _forEach(barangay, function(value, key) {
-      items.push(<Option value={value.id} key={value.id}>{value.name}</Option>);   
+      items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
     });
     return items;
+  }
+  const selectBarangay = (e) => {
+    console.log(e);
+    
   }
   const editContactNumber = (e,index) => {
     let value = e.target.value;
@@ -111,10 +167,12 @@ const ResidentForm = (props) => {
   }
   return (
     <div>
-      <h1 style={{textAlign: "center"}}>ADD RESIDENT</h1>
+      <Title style={{textAlign: "center"}}>
+        {(formType=="create" ? "ADD" : "EDIT")} RESIDENT
+      </Title>
+      <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
       <div className="row">
         <div className="col-md-6 col-lg-4">
-          <Form {...layout} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={onFinish} onFinishFailed={onFinishFailed}>
             <Form.Item label="Last Name" name="last_name" hasFeedback {...displayErrors('last_name')}>
               <Input autoComplete="off" placeholder="Enter Last Name" />
             </Form.Item>
@@ -142,10 +200,8 @@ const ResidentForm = (props) => {
             <Form.Item label="Birth Place" name="birth_place" hasFeedback {...displayErrors('birth_place')}>
               <Input autoComplete="off" placeholder="Enter Birth Place" />
             </Form.Item>
-          </Form>
         </div>
         <div className="col-md-6 col-lg-4">
-          <Form {...layout} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={onFinish} onFinishFailed={onFinishFailed}>
             <Form.Item label="Purok or Sitio" name="purok_sitio" hasFeedback {...displayErrors('purok_sitio')}>
                 <Input autoComplete="off" placeholder="Enter Purok or Sitio" />
               </Form.Item>
@@ -153,7 +209,7 @@ const ResidentForm = (props) => {
                 <Input autoComplete="off" placeholder="Enter Street Address" />
               </Form.Item>
               <Form.Item label="Barangay" name="psgc_id" hasFeedback {...displayErrors('psgc_id')}>
-                <Select placeholder="Select a Barangay">
+                <Select placeholder="Select a Barangay" >
                   {populateBarangaySelection(barangay)}
                 </Select>
               </Form.Item>
@@ -182,10 +238,8 @@ const ResidentForm = (props) => {
                 </Button.Group>
               </Form.Item>
               {contactNumberForm()}
-            </Form>
         </div>
         <div className="col-md-6 col-lg-4">
-          <Form {...layout} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={onFinish} onFinishFailed={onFinishFailed}>
             <Form.Item label="Voters Registration Status" name="is_registered_voter" hasFeedback {...displayErrors('is_registered_voter')}>
               <Select placeholder="Select a Registration Status">
                 <Option value="YES">REGISTERED VOTER</Option>
@@ -219,13 +273,12 @@ const ResidentForm = (props) => {
                 Submit
               </Button>
             </Form.Item>
-          </Form>
         </div>
       </div>
+          </Form>
     </div>
   );
 }
-
 
 
 export default connect(

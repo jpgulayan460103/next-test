@@ -46,8 +46,8 @@ class LoginForm extends Component {
       .then(res => {})
   }
   onFinish = values => {
-    console.log('Success:', values);
-    API.User.login(values)
+    // console.log('Success:', values);
+    API.Resident.login(values)
     .then(res => {
       this.props.dispatch({
         type: "USER_LOGIN_SUCCESSFUL",
@@ -65,7 +65,7 @@ class LoginForm extends Component {
     .then(res => {})
   }
   onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
+    // console.log('Failed:', errorInfo);
   }
   render() {
     return (

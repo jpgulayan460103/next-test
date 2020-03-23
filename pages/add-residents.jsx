@@ -17,7 +17,7 @@ export class index extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          {/* <Resident /> */}
+          <Resident />
         </Layouts>
       </Provider>
     );
