@@ -40,7 +40,7 @@ const Layouts = ({children}) => {
             </div>
             <BackTop />
           </Content>
-          <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+          <Footer style={{ textAlign: 'center' }}>Barangay Information System @2020</Footer>
         </Layout>
       </Layout>
     </Provider>

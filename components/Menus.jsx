@@ -13,15 +13,27 @@ const Menus = () => {
           <br />
           <br />
           <div className="logo mr-1"  >
-          <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/>
+          {/* <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/> */}
           </div>
           {(!collapsed ? (<div className="mb-32 pb-2"></div>)  : (<div className="mb-2 pb-2"></div>)   )}
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
             <Menu.Item key="1">
               <UserOutlined />
-              <span>Residents</span>
+              <span>Dashboard</span>
             </Menu.Item>
             <Menu.Item key="2">
+              <UserOutlined />
+              <span>Residents</span>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <UserOutlined />
+              <span>Blotters</span>
+            </Menu.Item>
+            <Menu.Item key="4">
+              <UserOutlined />
+              <span>Announcements</span>
+            </Menu.Item>
+            {/* <Menu.Item key="2">
               <UserOutlined />
               <span>Option 2</span>
             </Menu.Item>
@@ -52,7 +64,7 @@ const Menus = () => {
             </SubMenu>
             <Menu.Item key="9">
               <UserOutlined />
-            </Menu.Item>
+            </Menu.Item> */}
           </Menu>
         </Sider>
       </React.Fragment>

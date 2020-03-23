@@ -82,16 +82,18 @@ class Headers extends Component {
     return (
       <div>
       <Navbar color="light" light expand="md" fixed="top">
-        <NavbarBrand href="#"  onClick={() => this.redirect('') }>BARANGAY INFORMATION SYSTEM</NavbarBrand>
+        <NavbarBrand href="#"  onClick={() => this.redirect('') }>
+        {/* BARANGAY INFORMATION SYSTEM */}
+        </NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="#" onClick={() => this.redirect('about') }>About
+              <NavLink href="#" onClick={() => this.redirect('about') }>
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
+              <NavLink href="https://github.com/reactstrap/reactstrap"></NavLink>
             </NavItem>
           </Nav>
           <Nav navbar>
