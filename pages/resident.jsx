@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import React, { Component } from 'react';
-import Resident from '../components/resident/Resident'
+import ResidentForm from '../components/resident/components/ResidentForm'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
 
-export class residentIndex extends Component {
+export class index extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -17,11 +17,15 @@ export class residentIndex extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          <Resident />
+        <div className="row">
+          <div className="col-md-12">
+            <ResidentForm />
+          </div>
+        </div>
         </Layouts>
       </Provider>
     );
   }
 }
 
-export default residentIndex;
+export default index;

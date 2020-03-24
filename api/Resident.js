@@ -20,6 +20,11 @@ export default {
   update(formdata,id){
     return axios.put(`http://brgy.test/api/residents/${id}`,formdata);
   },
+  all(formData){
+    return axios.get('http://brgy.test/api/residents',{
+      params: formData
+    });
+  },
   getBarangay(){
     return axios.get('http://brgy.test/api/psgcs/dropdown');
   },

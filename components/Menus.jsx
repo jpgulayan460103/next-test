@@ -13,8 +13,13 @@ const Menus = () => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
-  const {route} = router;
-  
+  var {route} = router;
+  var {id} = router.query;
+  if(id){
+    if(route == "/resident"){
+      route = "/resident-edit";
+    }
+  }
   
   return (
     <React.Fragment>
@@ -43,12 +48,25 @@ const Menus = () => {
                 </span>
               }
             >
-              <Menu.Item key="2">All Residents</Menu.Item>
-              <Menu.Item key="/add-residents">
-              <Link href="/add-residents">
-                <a>Add Residents</a>
-              </Link>
+              <Menu.Item key="/residents">
+                <Link href="/residents">
+                  <a>All Residents</a>
+                </Link>
               </Menu.Item>
+
+              <Menu.Item key="/resident">
+                <Link href="/resident">
+                  <a>Add Residents</a>
+                </Link>
+              </Menu.Item>
+              
+              { id ? (
+                <Menu.Item key="/resident-edit">
+                    Edit Residents
+                </Menu.Item>
+              ) : "" }
+
+
             </SubMenu>
           </Menu>
         </Sider>

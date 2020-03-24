@@ -11,6 +11,7 @@ const initialState = () => {
 export default function user(state = initialState(), action) {
   switch (action.type) {
     case 'RESIDENT_FORM_SUBMIT':
+      state.formError = {};
       return state
     case 'RESIDENT_FORM_ERROR':
       state.formError = action.data;

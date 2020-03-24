@@ -11,11 +11,18 @@ if(ls('user')){
     return response;
   }, (error) => {
     if (error.response && error.response.status == 401) {
-      console.log("errorrr");
-    }else if (error.response && error.response.status == 404) {
-      console.log("errorrr");
       Swal.fire({
-        title: 'Error!',
+        title: 'Unauthorized',
+        text: 'You are not logged in or the session may have been expired.',
+        icon: 'warning',
+        confirmButtonText: 'Click to Login',
+        onClose: () => {
+          Router.push('/')
+        }
+      })
+    }else if (error.response && error.response.status == 404) {
+      Swal.fire({
+        title: 'Error',
         text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
         icon: 'error',
         confirmButtonText: 'Back to Home',
@@ -24,9 +31,22 @@ if(ls('user')){
         }
       })
     }else if (error.response && error.response.status == 403) {
-      console.log("errorrr");
+      Swal.fire({
+        title: 'Forbidden',
+        text: 'You do not have permission to access this page.',
+        icon: 'warning',
+        confirmButtonText: 'Back to Home',
+        onClose: () => {
+          Router.push('/')
+        }
+      })
     }else if (error.response && error.response.status >= 500) {
-      console.log("errorrr");
+      Swal.fire({
+        title: 'Oops...',
+        text: 'Something went wrong. Please report this to your technical support',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      })
     }
     return Promise.reject(error);
   });

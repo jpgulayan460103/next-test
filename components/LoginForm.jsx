@@ -47,7 +47,7 @@ class LoginForm extends Component {
   }
   onFinish = values => {
     // console.log('Success:', values);
-    API.Resident.login(values)
+    API.User.login(values)
     .then(res => {
       this.props.dispatch({
         type: "USER_LOGIN_SUCCESSFUL",

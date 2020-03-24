@@ -1,7 +1,7 @@
 import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router'
-import { Form, Input, Button, Checkbox, Select, DatePicker, Typography } from 'antd';
+import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
@@ -9,6 +9,7 @@ import _isEmpty from 'lodash/isEmpty'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import queryString from "query-string";
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -97,28 +98,51 @@ const ResidentForm = (props) => {
   }
   const formSubmit = (value) => {
     formData.contact_number = contactNumber;
+    props.dispatch({
+      type: "RESIDENT_FORM_SUBMIT",
+      data: {}
+    })
     if(formType == "create"){
       API.Resident.add(formData)
       .then(res => {
-        
+        Swal.fire(
+          'Success!',
+          'You have successfuly added a resident',
+          'success'
+        )
       })
       .catch(err => {
         props.dispatch({
           type: "RESIDENT_FORM_ERROR",
           data: err.response.data
         })
+        Swal.fire(
+          'Update Failed!',
+          `Please check for required fields`,
+          'info'
+        )
       })
       .then(res => {})
     }else{
       API.Resident.update(formData,id)
       .then(res => {
-        
+        Swal.fire(
+          'Success!',
+          `You have successfuly updated a resident <br> ${formData.full_name_last}`,
+          'success'
+        )
       })
       .catch(err => {
         props.dispatch({
           type: "RESIDENT_FORM_ERROR",
           data: err.response.data
         })
+
+        Swal.fire(
+          'Update Failed!',
+          `Please check for required fields`,
+          'info'
+        )
       })
       .then(res => {})
     }
@@ -158,7 +182,7 @@ const ResidentForm = (props) => {
     let items = [];
     _forEach(contactNumber, function(value, key) {
       items.push(
-        <Form.Item label={`Contact Number ${key+1}`} hasFeedback {...displayErrors(`contact_number.${key}`)} key={key}>
+        <Form.Item label={`Contact Number ${key+1}`} name={`contact_number_${key}`}  hasFeedback {...displayErrors(`contact_number.${key}`)} key={key}>
           <Input autoComplete="off" placeholder="Enter Contact Number" onChange={(e) => editContactNumber(e,key)} />
         </Form.Item>
       );
@@ -170,6 +194,7 @@ const ResidentForm = (props) => {
       <Title style={{textAlign: "center"}}>
         {(formType=="create" ? "ADD" : "EDIT")} RESIDENT
       </Title>
+      <Divider />
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
       <div className="row">
         <div className="col-md-6 col-lg-4">
@@ -225,7 +250,7 @@ const ResidentForm = (props) => {
                   <Option value="WIDOWED">WIDOWED</Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Contact Numbers">
+              {/* <Form.Item label="Contact Numbers">
                 <Button.Group>
                   <Button type="dashed" onClick={() => { addContactNumber() }}>
                     <PlusOutlined /> Add
@@ -236,8 +261,13 @@ const ResidentForm = (props) => {
                   </Button>) : "")
                   }
                 </Button.Group>
+              </Form.Item> */}
+              <Form.Item label="Contact Number" name="contact_number_1" hasFeedback {...displayErrors('contact_number_1')}>
+                <Input autoComplete="off" placeholder="Contact Number 1" />
               </Form.Item>
-              {contactNumberForm()}
+              <Form.Item label="Contact Number" name="contact_number_2" hasFeedback {...displayErrors('contact_number_2')}>
+                <Input autoComplete="off" placeholder="Contact Number 2" />
+              </Form.Item>
         </div>
         <div className="col-md-6 col-lg-4">
             <Form.Item label="Voters Registration Status" name="is_registered_voter" hasFeedback {...displayErrors('is_registered_voter')}>
