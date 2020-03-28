@@ -20,6 +20,6 @@ export default {
     return axios.get(`${axios.custom_base_url}api/psgcs/dropdown`);
   },
   get(id){
-    return axios.get(`api/residents/${id}`);
+    return axios.get(`${axios.custom_base_url}api/residents/${id}`);
   }
 }
