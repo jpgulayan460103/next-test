@@ -2,9 +2,9 @@ import axios from './axios-settings'
 
 export default {
   login(formdata){
-    return axios.post('http://brgy.test/api/login',formdata);
+    return axios.post(`${axios.custom_base_url}api/login`,formdata);
   },
   getUsers(){
-    return axios.get('http://brgy.test/api/users');
+    return axios.get(`${axios.custom_base_url}api/users`);
   }
 }

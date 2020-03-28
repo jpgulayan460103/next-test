@@ -185,7 +185,7 @@ const ResidentTable = (props) => {
             <a>Edit</a>
           </Link>
           &nbsp;|&nbsp;
-          <a href="javascript:" onClick={ () => confirmDeleteResident(record) }>
+          <a href="#!" onClick={ () => confirmDeleteResident(record) }>
             Delete
           </a>
         </span>

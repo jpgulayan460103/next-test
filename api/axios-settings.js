@@ -4,6 +4,7 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Router from 'next/router'
 
 
+axios.custom_base_url = "https://brgy.test/";
 if(ls('user')){
   let token = ls('user').access_token;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
