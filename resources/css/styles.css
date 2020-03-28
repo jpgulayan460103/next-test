@@ -11,6 +11,9 @@
 .site-layout .site-layout-background {
   background: #fff;
 }
+.site-layout-background-index{
+  /* background: ; */
+}
 .logo{
   height: 60px;
 }

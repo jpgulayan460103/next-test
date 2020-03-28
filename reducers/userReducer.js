@@ -16,7 +16,7 @@ const userLoginDetail = () => {
   return state;
 }
 
-export default function user(state = initialState(), action) {
+export default function userReducer(state = initialState(), action) {
   if(ls('user') != null){
     state = userLoginDetail();
   }else{

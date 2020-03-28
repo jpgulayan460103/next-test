@@ -4,6 +4,7 @@ import Resident from '../components/resident/Resident'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
+import { Card } from 'antd';
 
 export class index extends Component {
   constructor(props){
@@ -17,7 +18,7 @@ export class index extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          {/* <Resident /> */}
+          
         </Layouts>
       </Provider>
     );

@@ -19,6 +19,7 @@ function mapStateToProps(state) {
   return {
     formData: state.resident.formData,
     formError: state.resident.formError,
+    barangay: state.resident.barangays,
   };
 }
 const handleClick = () => {}
@@ -33,7 +34,6 @@ const tailLayout = {
 };
 const ResidentForm = (props) => {
 
-  const [barangay, setBarangay] = useState({});
   const [formType, setformType] = useState("create");
   const [formData, setFormData] = useState({is_registered_voter:"YES"});
   const [contactNumber, setContactNumber] = useState([]);
@@ -50,17 +50,23 @@ const ResidentForm = (props) => {
     }
   }, []);
   const getBarangay = () => {
-    API.Resident.getBarangay()
-    .then(res => {
-      setBarangay(res.data.options[0].cities[0].barangays);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .then(res => {
-      // console.log(barangay);
-    })
-    ;
+    if(_isEmpty(props.barangay)){
+      API.Resident.getBarangay()
+      .then(res => {
+        let barangayList = res.data.options[0].cities[0].barangays;
+        props.dispatch({
+          type: "SET_BARANGAY",
+          data: barangayList
+        })
+      })
+      .catch(err => {
+        
+      })
+      .then(res => {
+        
+      })
+      ;
+    }
   }
   const getResident = (id) => {
     API.Resident.get(id)
@@ -76,7 +82,15 @@ const ResidentForm = (props) => {
       });
     })
     .catch(err => {
-      console.log(err);
+      Swal.fire({
+        title: 'Error',
+        text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
+        icon: 'error',
+        confirmButtonText: 'Back to Home',
+        onClose: () => {
+          Router.push('/')
+        }
+      })
     })
     .then(res => {
       // console.log(barangay);
@@ -234,8 +248,15 @@ const ResidentForm = (props) => {
                 <Input autoComplete="off" placeholder="Enter Street Address" />
               </Form.Item>
               <Form.Item label="Barangay" name="psgc_id" hasFeedback {...displayErrors('psgc_id')}>
-                <Select placeholder="Select a Barangay" >
-                  {populateBarangaySelection(barangay)}
+                <Select
+                  showSearch
+                  placeholder="Select a Barangay"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {populateBarangaySelection(props.barangay)}
                 </Select>
               </Form.Item>
               <Form.Item label="Occupation" name="occupation" hasFeedback {...displayErrors('occupation')}>

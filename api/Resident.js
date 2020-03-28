@@ -1,16 +1,4 @@
 import axios from './axios-settings'
-axios.interceptors.response.use((response) => {
-  return response;
-}, (error) => {
-  if (error.response && error.response.status == 401) {
-    console.log("errorrr");
-  }else if (error.response && error.response.status == 403) {
-    console.log("errorrr");
-  }else if (error.response && error.response.status >= 500) {
-    console.log("errorrr");
-  }
-  return Promise.reject(error);
-});
 
 export default {
   
@@ -19,6 +7,9 @@ export default {
   },
   update(formdata,id){
     return axios.put(`http://brgy.test/api/residents/${id}`,formdata);
+  },
+  delete(id){
+    return axios.delete(`http://brgy.test/api/residents/${id}`);
   },
   all(formData){
     return axios.get('http://brgy.test/api/residents',{

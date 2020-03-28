@@ -7,7 +7,6 @@ import Layouts from './../layouts/layouts'
 const Post = () => {
   const router = useRouter()
   const { pid } = router.query
-  console.log(router.query);
   
   return (
     <Provider store={store}>

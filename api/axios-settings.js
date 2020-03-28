@@ -10,22 +10,13 @@ if(ls('user')){
   axios.interceptors.response.use((response) => {
     return response;
   }, (error) => {
+    console.log(error);
     if (error.response && error.response.status == 401) {
       Swal.fire({
         title: 'Unauthorized',
         text: 'You are not logged in or the session may have been expired.',
         icon: 'warning',
         confirmButtonText: 'Click to Login',
-        onClose: () => {
-          Router.push('/')
-        }
-      })
-    }else if (error.response && error.response.status == 404) {
-      Swal.fire({
-        title: 'Error',
-        text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
-        icon: 'error',
-        confirmButtonText: 'Back to Home',
         onClose: () => {
           Router.push('/')
         }
