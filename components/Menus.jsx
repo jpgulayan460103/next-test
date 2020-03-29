@@ -50,7 +50,7 @@ const Menus = (props) => {
           <br />
           <br />
           <div className="logo mr-1"  >
-          {/* <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/> */}
+          <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/>
           </div>
           {(!collapsed ? (<div className="mb-32 pb-2"></div>)  : (<div className="mb-2 pb-2"></div>)   )}
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline" defaultOpenKeys={['residents','officials']}>

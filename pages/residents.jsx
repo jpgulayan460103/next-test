@@ -16,6 +16,9 @@ export class residentsIndex extends Component {
     
     return (
       <Provider store={store}>
+        <Head>
+          <title>Residents</title>
+        </Head>
         <Layouts>
           <ResidentTable />
         </Layouts>

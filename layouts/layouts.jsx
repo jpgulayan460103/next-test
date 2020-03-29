@@ -34,9 +34,6 @@ const Layouts = ({children}) => {
   }
   return (
     <Provider store={store}>
-      <Head>
-        <title>Create Next App</title>
-      </Head>
       <Layout style={{ minHeight: '100vh' }}>
         <Menus />
         <Layout className="site-layout">

@@ -16,6 +16,9 @@ export class BarangayOfficialIndex extends Component {
     
     return (
       <Provider store={store}>
+        <Head>
+          <title>Barangay Officials</title>
+        </Head>
         <Layouts>
           <BarangayOfficialTable />
         </Layouts>

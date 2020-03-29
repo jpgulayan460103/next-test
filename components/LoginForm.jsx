@@ -115,11 +115,6 @@ class LoginForm extends Component {
             </Button>
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="button" size="large" onClick={() => this.handleTest() } block>
-              test
-            </Button>
-          </Form.Item>
         </Form>
       </div>
     );

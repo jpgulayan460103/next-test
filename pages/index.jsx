@@ -15,6 +15,9 @@ export class index extends Component {
     
     return (
       <Provider store={store}>
+        <Head>
+          <title>Dashboard</title>
+        </Head>
         <Layouts>
           
         </Layouts>

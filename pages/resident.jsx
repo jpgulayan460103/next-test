@@ -16,6 +16,9 @@ export class index extends Component {
     
     return (
       <Provider store={store}>
+        <Head>
+          <title>Resident Form</title>
+        </Head>
         <Layouts>
         <div className="row">
           <div className="col-md-12">

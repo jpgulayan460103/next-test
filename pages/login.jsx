@@ -17,6 +17,9 @@ export class index extends Component {
     
     return (
       <Provider store={store}>
+        <Head>
+          <title>Login</title>
+        </Head>
         <div className="container-fluid">
             <div className="row justify-content-center">
               <div className="col-md-4">
