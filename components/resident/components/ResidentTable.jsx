@@ -84,6 +84,7 @@ const ResidentTable = (props) => {
 
   const populateBarangaySelection = (barangays) => {
     let items = [];
+    items.push(<Option value="all" key="all" >All Barangay</Option>);   
     _forEach(barangays, function(value, key) {
       items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
     });

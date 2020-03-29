@@ -48,10 +48,7 @@ class Headers extends Component {
           </DropdownToggle>
           <DropdownMenu right>
             <DropdownItem>
-              Option 1
-            </DropdownItem>
-            <DropdownItem>
-              Option 2
+              Change Password
             </DropdownItem>
             <DropdownItem divider />
             <DropdownItem>

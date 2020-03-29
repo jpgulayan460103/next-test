@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
+import SmsBlastForm from '../components/SmsBlast/SmsBlastForm'
 
 export class index extends Component {
   constructor(props){
@@ -16,7 +17,11 @@ export class index extends Component {
     return (
       <Provider store={store}>
         <Layouts>
-          
+          <div className="row">
+            <div className="col-md-4">
+              <SmsBlastForm />
+            </div>
+          </div>
         </Layouts>
       </Provider>
     );

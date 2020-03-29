@@ -6,7 +6,7 @@ import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import _debounce from 'lodash/debounce'
 import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
@@ -18,8 +18,8 @@ const { Option } = Select;
 
 function mapStateToProps(state) {
   return {
-    formData: state.resident.formData,
-    formError: state.resident.formError,
+    formData: state.barangayOfficial.formData,
+    formError: state.barangayOfficial.formError,
     barangay: state.resident.barangays,
   };
 }
@@ -36,7 +36,8 @@ const tailLayout = {
 const BarangayOfficialForm = (props) => {
 
   const [formType, setformType] = useState("create");
-  const [formData, setFormData] = useState({is_registered_voter:"YES"});
+  const [formData, setFormData] = useState({});
+  const [submit, setSubmit] = useState(false);
   const [contactNumber, setContactNumber] = useState([]);
   const formRef = React.useRef();
   const router = useRouter()
@@ -47,7 +48,7 @@ const BarangayOfficialForm = (props) => {
     getBarangay();
     if(id){
       setformType("update");
-      getResident(id);
+      getBarangayOfficial(id);
     }
   }, []);
   const getBarangay = () => {
@@ -69,7 +70,7 @@ const BarangayOfficialForm = (props) => {
       ;
     }
   }
-  const getResident = (id) => {
+  const getBarangayOfficial = (id) => {
     API.BarangayOfficial.get(id)
     .then(res => {
       let barangayOfficials = res.data.barangay_officials;
@@ -84,16 +85,15 @@ const BarangayOfficialForm = (props) => {
     })
     .catch(err => {
       console.log(err);
-      
-      // Swal.fire({
-      //   title: 'Error',
-      //   text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
-      //   icon: 'error',
-      //   confirmButtonText: 'Back to Home',
-      //   onClose: () => {
-      //     Router.push('/')
-      //   }
-      // })
+      Swal.fire({
+        title: 'Error',
+        text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
+        icon: 'error',
+        confirmButtonText: 'Back to Home',
+        onClose: () => {
+          Router.push('/')
+        }
+      })
     })
     .then(res => {
       // console.log(barangay);
@@ -101,56 +101,60 @@ const BarangayOfficialForm = (props) => {
     ;
   }
   const setFormFields = (e) => {
-    for (var key in e) {
-      if (e.hasOwnProperty(key)) {
-        if(typeof e[key] == 'string'){
-          e[key] = e[key].toUpperCase();
-        }
-      }
-    }
     setFormData({
       ...formData,
       ...e
     })
   }
-  const formSubmit = (value) => {
+  const formSubmit = _debounce(() => {
+    setSubmit(true);
     props.dispatch({
-      type: "RESIDENT_FORM_SUBMIT",
+      type: "BARANGAY_OFFICIAL_FORM_SUBMIT",
       data: {}
     })
     if(formType == "create"){
       API.BarangayOfficial.add(formData)
       .then(res => {
+        setSubmit(false);
         Swal.fire(
           'Success!',
-          'You have successfuly added a resident',
+          'You have successfuly added a barangay official.',
           'success'
         )
+        formRef.current.resetFields();
+        setFormData({});
       })
       .catch(err => {
-        props.dispatch({
-          type: "RESIDENT_FORM_ERROR",
-          data: err.response.data
-        })
+        setSubmit(false);
+        if(err.response && err.response.data){
+          props.dispatch({
+            type: "BARANGAY_OFFICIAL_FORM_ERROR",
+            data: err.response.data
+          })
+        }
         Swal.fire(
           'Update Failed!',
           `Please check for required fields`,
           'info'
         )
       })
-      .then(res => {})
+      .then(res => {
+        setSubmit(false);
+      })
     }else{
       API.BarangayOfficial.update(formData,id)
       .then(res => {
+        setSubmit(false);
         Swal.fire(
           'Success!',
-          `You have successfuly updated a resident <br> ${formData.full_name_last}`,
+          `You have successfuly updated a barangay official <br> ${formData.full_name_last}`,
           'success'
         )
       })
       .catch(err => {
+        setSubmit(false);
         props.dispatch({
-          type: "RESIDENT_FORM_ERROR",
+          type: "BARANGAY_OFFICIAL_FORM_ERROR",
           data: err.response.data
         })
 
@@ -160,9 +164,11 @@ const BarangayOfficialForm = (props) => {
           'info'
         )
       })
-      .then(res => {})
+      .then(res => {
+        setSubmit(false);
+      })
     }
-  }
+  }, 250)
   const displayErrors = (field) => {
     if(props.formError[field]){
       return {
@@ -270,7 +276,7 @@ const BarangayOfficialForm = (props) => {
               <DatePicker style={{width:'100%'}} format="MM-DD-YYYY"/>
             </Form.Item>
             <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={submit}>
                 Submit
               </Button>
             </Form.Item>    

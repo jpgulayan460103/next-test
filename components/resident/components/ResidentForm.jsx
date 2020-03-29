@@ -1,20 +1,17 @@
 import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
-import _map from 'lodash/map'
 import _isEmpty from 'lodash/isEmpty'
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import _debounce from 'lodash/debounce'
 import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
-import Router from 'next/router'
 
 const { Title } = Typography;
 const { Option } = Select;
-
 
 function mapStateToProps(state) {
   return {
@@ -23,21 +20,11 @@ function mapStateToProps(state) {
     barangay: state.resident.barangays,
   };
 }
-const handleClick = () => {}
 
-const onFinishFailed = (value) => {}
-const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
-};
 const ResidentForm = (props) => {
-
   const [formType, setformType] = useState("create");
   const [formData, setFormData] = useState({is_registered_voter:"YES"});
-  const [contactNumber, setContactNumber] = useState([]);
+  const [submit, setSubmit] = useState(false);
   const formRef = React.useRef();
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
@@ -60,13 +47,8 @@ const ResidentForm = (props) => {
           data: barangayList
         })
       })
-      .catch(err => {
-        
-      })
-      .then(res => {
-        
-      })
-      ;
+      .catch(err => {})
+      .then(res => {});
     }
   }
   const getResident = (id) => {
@@ -98,21 +80,22 @@ const ResidentForm = (props) => {
     })
     ;
   }
+  const onFinishFailed = (value) => {}
+  const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  };
+  const tailLayout = {
+    wrapperCol: { offset: 8, span: 16 },
+  };
   const setFormFields = (e) => {
-    for (var key in e) {
-      if (e.hasOwnProperty(key)) {
-        if(typeof e[key] == 'string'){
-          e[key] = e[key].toUpperCase();
-        }
-      }
-    }
     setFormData({
       ...formData,
       ...e
     })
   }
-  const formSubmit = (value) => {
-    formData.contact_number = contactNumber;
+  const formSubmit = _debounce(() => {
+    setSubmit(true);
     props.dispatch({
       type: "RESIDENT_FORM_SUBMIT",
       data: {}
@@ -120,27 +103,38 @@ const ResidentForm = (props) => {
     if(formType == "create"){
       API.Resident.add(formData)
       .then(res => {
+        setSubmit(false);
         Swal.fire(
           'Success!',
           'You have successfuly added a resident',
           'success'
         )
+        formRef.current.resetFields();
+        setFormData({is_registered_voter:"YES"});
       })
       .catch(err => {
-        props.dispatch({
-          type: "RESIDENT_FORM_ERROR",
-          data: err.response.data
-        })
+        setSubmit(false);
+        console.log(err);
+        
+        if(err.response && err.response.data){
+          props.dispatch({
+            type: "RESIDENT_FORM_ERROR",
+            data: err.response.data
+          })
+        }
         Swal.fire(
           'Update Failed!',
           `Please check for required fields`,
           'info'
         )
       })
-      .then(res => {})
+      .then(res => {
+        setSubmit(false);
+      })
     }else{
       API.Resident.update(formData,id)
       .then(res => {
+        setSubmit(false);
         Swal.fire(
           'Success!',
           `You have successfuly updated a resident <br> ${formData.full_name_last}`,
@@ -148,10 +142,13 @@ const ResidentForm = (props) => {
         )
       })
       .catch(err => {
-        props.dispatch({
-          type: "RESIDENT_FORM_ERROR",
-          data: err.response.data
-        })
+        setSubmit(false);
+        if(err.response && err.response.data){
+          props.dispatch({
+            type: "RESIDENT_FORM_ERROR",
+            data: err.response.data
+          })
+        }
 
         Swal.fire(
           'Update Failed!',
@@ -159,9 +156,11 @@ const ResidentForm = (props) => {
           'info'
         )
       })
-      .then(res => {})
+      .then(res => {
+        setSubmit(false);
+      })
     }
-  }
+  }, 250)
   const displayErrors = (field) => {
     if(props.formError[field]){
       return {
@@ -174,33 +173,6 @@ const ResidentForm = (props) => {
     let items = [];
     _forEach(barangay, function(value, key) {
       items.push(<Option value={value.id} key={value.id} >{value.name}</Option>);   
-    });
-    return items;
-  }
-  const selectBarangay = (e) => {
-    console.log(e);
-    
-  }
-  const editContactNumber = (e,index) => {
-    let value = e.target.value;
-    contactNumber[index] = value;
-    setContactNumber([...contactNumber])
-  }
-  const addContactNumber = () => {
-    setContactNumber([...contactNumber, ""]);
-  }
-  const deleteContactNumber = (e) => {
-    contactNumber.pop();
-    setContactNumber([...contactNumber])
-  }
-  const contactNumberForm = () => {
-    let items = [];
-    _forEach(contactNumber, function(value, key) {
-      items.push(
-        <Form.Item label={`Contact Number ${key+1}`} name={`contact_number_${key}`}  hasFeedback {...displayErrors(`contact_number.${key}`)} key={key}>
-          <Input autoComplete="off" placeholder="Enter Contact Number" onChange={(e) => editContactNumber(e,key)} />
-        </Form.Item>
-      );
     });
     return items;
   }
@@ -272,24 +244,12 @@ const ResidentForm = (props) => {
                   <Option value="WIDOWED">WIDOWED</Option>
                 </Select>
               </Form.Item>
-              {/* <Form.Item label="Contact Numbers">
-                <Button.Group>
-                  <Button type="dashed" onClick={() => { addContactNumber() }}>
-                    <PlusOutlined /> Add
-                  </Button>
-                  {
-                    (contactNumber.length != 0 ? (<Button danger onClick={() => { deleteContactNumber() }}>
-                    <DeleteOutlined /> Remove Contact Number {contactNumber.length}
-                  </Button>) : "")
-                  }
-                </Button.Group>
-              </Form.Item> */}
-              <Form.Item label="Contact Number" name="contact_number_1" hasFeedback {...displayErrors('contact_number_1')}>
-                <Input autoComplete="off" placeholder="Contact Number 1" />
+              <Form.Item label="Contact Number" name="contact_number" hasFeedback {...displayErrors('contact_number')}>
+                <Input autoComplete="off" placeholder="Contact Number" />
               </Form.Item>
-              <Form.Item label="Contact Number" name="contact_number_2" hasFeedback {...displayErrors('contact_number_2')}>
+              {/* <Form.Item label="Contact Number" name="contact_number_2" hasFeedback {...displayErrors('contact_number_2')}>
                 <Input autoComplete="off" placeholder="Contact Number 2" />
-              </Form.Item>
+              </Form.Item> */}
         </div>
         <div className="col-md-6 col-lg-4">
             <Form.Item label="Voters Registration Status" name="is_registered_voter" hasFeedback {...displayErrors('is_registered_voter')}>
@@ -321,7 +281,7 @@ const ResidentForm = (props) => {
             </Form.Item>
 
             <Form.Item {...tailLayout}>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" disabled={submit}>
                 Submit
               </Button>
             </Form.Item>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Layout, Menu } from 'antd';
+import { connect } from 'react-redux';
+import { Layout, Menu, Badge  } from 'antd';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
@@ -8,8 +9,14 @@ import { useRouter } from 'next/router'
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
-
-const Menus = () => {
+function mapStateToProps(state) {
+  return {
+    sentCount: state.smsBlast.sentCount,
+    recipients: state.smsBlast.recipients,
+    sendStatus: state.smsBlast.sendStatus,
+  };
+}
+const Menus = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
@@ -26,6 +33,14 @@ const Menus = () => {
     
       default:
         break;
+    }
+  }
+
+  const showSmsProgress = (props) => {
+    if(props.sendStatus && props.recipients.threads){
+      return (
+        <Badge count={`${props.sentCount}/${props.recipients.threads.count}`} />
+      )
     }
   }
   
@@ -102,11 +117,21 @@ const Menus = () => {
               ) : "" }
 
             </SubMenu>
+            <Menu.Item key="/sms-blast">
+              <UserOutlined />
+              <Link href="/sms-blast">
+                <a>
+                  SMS Blast {showSmsProgress(props)}
+                </a>
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
       </React.Fragment>
   );
 }
 
-export default Menus;
+export default connect(
+  mapStateToProps,
+)(Menus);
 
