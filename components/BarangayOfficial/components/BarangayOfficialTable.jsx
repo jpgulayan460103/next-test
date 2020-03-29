@@ -17,18 +17,19 @@ const { confirm } = Modal;
 function mapStateToProps(state) {
   return {
     barangays: state.resident.barangays,
-    residents: state.resident.residents,
-    pagination: state.resident.tablePagination,
-    searchData: state.resident.searchData,
+    barangayOfficials: state.barangayOfficial.barangayOfficials,
+    pagination: state.barangayOfficial.tablePagination,
+    searchData: state.barangayOfficial.searchData,
   };
 }
 
 const ResidentTable = (props) => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    getResidents();
+    getBarangayOfficials();
     loadBarangays();
   }, []);
+
 
   const loadBarangays = () => {
     if(isEmpty(props.barangays)){
@@ -36,23 +37,25 @@ const ResidentTable = (props) => {
     }
   }
 
-  const getResidents = (page = 1) => {
+  const getBarangayOfficials = (page = 1) => {
     setLoading(true);
     let filterOptions = {
       page: page,
       ...props.searchData
     }
-    API.Resident.all(filterOptions)
+    console.log(filterOptions);
+    
+    API.BarangayOfficial.all(filterOptions)
     .then((res) => {
-      let result = res.data.residents.data;
-      let resultPagination = res.data.residents.meta.pagination;
+      let result = res.data.barangay_officials.data;
+      let resultPagination = res.data.barangay_officials.meta.pagination;
       setLoading(false);
       props.dispatch({
-        type: "SET_RESIDENTS",
+        type: "SET_BARANGAY_OFFICIAL",
         data: result
       })
       props.dispatch({
-        type: "SET_RESIDENTS_PAGINATION",
+        type: "SET_BARANGAY_OFFICIAL_PAGINATION",
         data: resultPagination
       })
     })
@@ -65,7 +68,7 @@ const ResidentTable = (props) => {
   }
 
   const getBarangays = () => {
-    API.Resident.getBarangay()
+    API.BarangayOfficial.getBarangay()
     .then(res => {
       let barangayList = res.data.options[0].cities[0].barangays;
       props.dispatch({
@@ -92,28 +95,28 @@ const ResidentTable = (props) => {
 
   const setBarangayFilter = (value) => {
     props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
+      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
       data: {...props.searchData,psgc_id:value}
     })
   }
   const setSearchString = (e) => {
     let string = e.target.value;
     props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
+      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
       data: {...props.searchData,query:string}
     })
   }
-  const setVotersRegistrationFilter = (value) => {
+  const setPositionFilter = (value) => {
     props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
-      data: {...props.searchData,is_registered_voter:value}
+      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
+      data: {...props.searchData,position:value}
     })
   }
 
-  const deleteResident = (resident) => {
-    API.Resident.delete(resident.id)
+  const deleteBarangayOfficial = (barangayOfficial) => {
+    API.BarangayOfficial.delete(barangayOfficial.id)
     .then(res => {
-      getResidents();
+      getBarangayOfficials();
     })
     .catch(res => {
       Swal.fire({
@@ -127,23 +130,23 @@ const ResidentTable = (props) => {
     .then(res => {})
     ;
   }
-  const confirmDeleteResident = (resident) => {
+  const confirmDeleteBarangayOfficial = (barangayOfficial) => {
     confirm({
-      title: 'Are you sure remove this resident?',
+      title: 'Are you sure remove this barangay official?',
       icon: <ExclamationCircleOutlined />,
-      content: `This will permanently remove ${resident.full_name_last} from the list.`,
+      content: `This will permanently remove ${barangayOfficial.full_name_last} from the list.`,
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
       onOk() {
-        deleteResident(resident);
+        deleteBarangayOfficial(barangayOfficial);
       },
       onCancel() {
       },
     });
   }
 
-  const dataSource = props.residents;
+  const dataSource = props.barangayOfficials;
   
   const columns = [
     {
@@ -152,34 +155,52 @@ const ResidentTable = (props) => {
       key: 'full_name_last',
     },
     {
-      title: 'Adress',
+      title: 'Barangay',
       key: 'address',
       render: (text, record) => (
         <span>
-          { `${record.purok_sitio} ${record.street_address}, ${record.psgc.brgy_name}, ${record.psgc.city_name} ${record.psgc.province_name}` }
+          { `${record.psgc.brgy_name}` }
         </span>
       ),
     },
     {
-      title: 'Voter Status',
-      dataIndex: 'is_registered_voter',
-      key: 'is_registered_voter',
+      title: 'City',
+      key: 'city',
+      render: (text, record) => (
+        <span>
+          { `${record.psgc.city_name}` }
+        </span>
+      ),
+    },
+    {
+      title: 'Province',
+      key: 'province',
+      render: (text, record) => (
+        <span>
+          { `${record.psgc.province_name}` }
+        </span>
+      ),
+    },
+    {
+      title: 'Position',
+      dataIndex: 'position',
+      key: 'position',
     },
     {
       title: 'Contact Number',
-      dataIndex: 'contact_number_1',
-      key: 'contact_number_1',
+      dataIndex: 'contact_number',
+      key: 'contact_number',
     },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link href={{ pathname: '/resident', query: { id: record.id } }}>
+          <Link href={{ pathname: '/barangay-official', query: { id: record.id } }}>
             <a>Edit</a>
           </Link>
           &nbsp;|&nbsp;
-          <a href="#!" onClick={ () => confirmDeleteResident(record) }>
+          <a href="#!" onClick={ () => confirmDeleteBarangayOfficial(record) }>
             Delete
           </a>
         </span>
@@ -194,14 +215,14 @@ const ResidentTable = (props) => {
   };
 
   const handleResidentPage = (val) => {
-    getResidents(val);
+    getBarangayOfficials(val);
   }
   
 
   return (
     <div>
       <Title style={{textAlign: "center"}}>
-        RESIDENTS
+        BARANGAY OFFICIALS
       </Title>
       <Divider />
       <Search
@@ -209,7 +230,7 @@ const ResidentTable = (props) => {
         placeholder="input search text"
         onChange={value => setSearchString(value)}
         style={{ width: 200 }}
-        onSearch={getResidents}
+        onSearch={getBarangayOfficials}
         defaultValue={props.searchData.query}
       />
       <Select
@@ -228,21 +249,23 @@ const ResidentTable = (props) => {
       </Select>
       <Select
         allowClear
-        placeholder="Select Voters Registration Status"
+        placeholder="Select Position"
         style={{ width: 200 }}
-        onChange={setVotersRegistrationFilter}
+        onChange={setPositionFilter}
         defaultValue={props.searchData.is_registered_voter}
       >
-        <Option value="1">Registered</Option>
-        <Option value="0">Not Registered</Option>
+        <Option value="PUNONG BARANGAY">PUNONG BARANGAY</Option>
+        <Option value="SANGGUNIANG BARANGAY MEMBER">SANGGUNIANG BARANGAY MEMBER</Option>
+        <Option value="SK CHAIRPERSON">SK CHAIRPERSON</Option>
+        <Option value="OTHERS">OTHERS</Option>
       </Select>
-      <Button type="primary" icon={<SearchOutlined />} onClick={getResidents}>
+      <Button type="primary" icon={<SearchOutlined />} onClick={getBarangayOfficials}>
         Search
       </Button>
       <Table dataSource={dataSource} columns={columns} pagination={false} loading={loading} />
       <Divider />
 
-      {!_isEmpty(props.residents) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
+      {!_isEmpty(props.barangayOfficials) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
 
     </div>
   );

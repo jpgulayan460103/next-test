@@ -16,8 +16,16 @@ const Menus = () => {
   var {route} = router;
   var {id} = router.query;
   if(id){
-    if(route == "/resident"){
-      route = "/resident-edit";
+    switch (route) {
+      case "/resident":
+        route = "/resident-edit";
+        break;
+      case "/barangay-official":
+        route = "/barangay-official-edit";
+        break;
+    
+      default:
+        break;
     }
   }
   
@@ -30,7 +38,7 @@ const Menus = () => {
           {/* <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/> */}
           </div>
           {(!collapsed ? (<div className="mb-32 pb-2"></div>)  : (<div className="mb-2 pb-2"></div>)   )}
-          <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline" defaultOpenKeys={['sub1']}>
+          <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline" defaultOpenKeys={['residents','officials']}>
             <Menu.Item key="/">
               <UserOutlined />
               <Link href="/">
@@ -40,7 +48,34 @@ const Menus = () => {
               </Link>
             </Menu.Item>
             <SubMenu
-              key="sub1"
+              key="officials"
+              title={
+                <span>
+                  <UserOutlined />
+                  <span>Barangay Officials</span>
+                </span>
+              }
+            >
+              <Menu.Item key="/barangay-officials">
+                <Link href="/barangay-officials">
+                  <a>All Barangay Officials</a>
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="/barangay-official">
+                <Link href="/barangay-official">
+                  <a>Add Barangay Official</a>
+                </Link>
+              </Menu.Item>
+              
+              { id ? (
+                <Menu.Item key="/barangay-official-edit">
+                    Edit Barangay Official
+                </Menu.Item>
+              ) : "" }
+            </SubMenu>
+            <SubMenu
+              key="residents"
               title={
                 <span>
                   <UserOutlined />
@@ -56,16 +91,15 @@ const Menus = () => {
 
               <Menu.Item key="/resident">
                 <Link href="/resident">
-                  <a>Add Residents</a>
+                  <a>Add Resident</a>
                 </Link>
               </Menu.Item>
               
               { id ? (
                 <Menu.Item key="/resident-edit">
-                    Edit Residents
+                    Edit Resident
                 </Menu.Item>
               ) : "" }
-
 
             </SubMenu>
           </Menu>

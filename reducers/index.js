@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux'
 import user from './userReducer'
 import resident from './residentReducer'
-import visibilityFilter from './visibilityFilter'
+import barangayOfficial from './barangayOfficialReducer'
 
 const rootReducer = combineReducers({
   user,
   resident,
-  visibilityFilter
+  barangayOfficial,
 })
 
 export default rootReducer

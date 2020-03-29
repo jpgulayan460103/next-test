@@ -39,6 +39,13 @@ if(ls('user')){
         icon: 'error',
         confirmButtonText: 'Ok',
       })
+    }else if (!error.status) {
+      Swal.fire({
+        title: 'Oops...',
+        text: 'Check your internet connection',
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      })
     }
     return Promise.reject(error);
   });

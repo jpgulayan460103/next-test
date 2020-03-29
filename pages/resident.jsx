@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React, { Component } from 'react';
-import ResidentForm from '../components/resident/components/ResidentForm'
+import ResidentForm from '../components/Resident/components/ResidentForm'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
