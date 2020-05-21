@@ -4,10 +4,9 @@ const initialState = () => {
   return {
     formData: {},
     formError: {},
-    user: {},
-    barangayOfficials: [],
-    tablePagination: {},
-    searchData: {},
+    formType: "create",
+    formStatus: "hide",
+    selectedBarangayOfficial: {},
   }
 }
 
@@ -20,15 +19,14 @@ export default function residentReducer(state = initialState(), action) {
       state.formError = action.data;
       return state
     case 'SET_BARANGAY_OFFICIAL':
-      state.barangayOfficials = action.data;
+      state.selectedBarangayOfficial = action.data;
       return state
-    case 'SET_BARANGAY_OFFICIAL_PAGINATION':
-      state.tablePagination = action.data;
+    case 'SET_BARANGAY_OFFICIAL_FORM_STATUS':
+      state.formStatus = action.data;
       return state
-    case 'SET_BARANGAY_OFFICIAL_SEARCH_DATA':
-      state.searchData = action.data;
+    case 'SET_BARANGAY_OFFICIAL_FORM_TYPE':
+      state.formType = action.data;
       return state
-
     default:
       return state
   }

@@ -2,6 +2,7 @@ import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
 import Router, { useRouter } from 'next/router'
 import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
+import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _isEmpty from 'lodash/isEmpty'
@@ -18,6 +19,8 @@ function mapStateToProps(state) {
     formData: state.resident.formData,
     formError: state.resident.formError,
     barangay: state.resident.barangays,
+    formType: state.resident.formType,
+    selectedResident: state.resident.selectedResident,
   };
 }
 
@@ -32,11 +35,10 @@ const ResidentForm = (props) => {
   
   useEffect(() => {
     getBarangay();
-    if(id){
-      setformType("update");
-      getResident(id);
-    }
   }, []);
+  useEffect(() => {
+    loadResidentData();
+  }, [props.selectedResident]);
   const getBarangay = () => {
     if(_isEmpty(props.barangay)){
       API.Resident.getBarangay()
@@ -51,35 +53,22 @@ const ResidentForm = (props) => {
       .then(res => {});
     }
   }
-  const getResident = (id) => {
-    API.Resident.get(id)
-    .then(res => {
-      let resident = res.data.residents;
-      resident.birth_date = moment(resident.birth_date, "MM-DD-YYYY");
-      resident.voters_registration_date = moment(resident.voters_registration_date, "MM-DD-YYYY");
+  const loadResidentData = () => {
+    let loadedData = props.selectedResident;
+    if(_isEmpty(loadedData)){
+      setFormData({});
+    }else{
+      loadedData.birth_date = moment(loadedData.birth_date, "MM-DD-YYYY");
+      loadedData.voters_registration_date = moment(loadedData.voters_registration_date, "MM-DD-YYYY");
       setFormData({
-        ...resident
+        ...loadedData
       })
       formRef.current.setFieldsValue({
-        ...resident
+        ...loadedData
       });
-    })
-    .catch(err => {
-      Swal.fire({
-        title: 'Error',
-        text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
-        icon: 'error',
-        confirmButtonText: 'Back to Home',
-        onClose: () => {
-          Router.push('/')
-        }
-      })
-    })
-    .then(res => {
-      // console.log(barangay);
-    })
-    ;
+    }
   }
+
   const onFinishFailed = (value) => {}
   const layout = {
     labelCol: { span: 8 },
@@ -132,7 +121,7 @@ const ResidentForm = (props) => {
         setSubmit(false);
       })
     }else{
-      API.Resident.update(formData,id)
+      API.Resident.update(formData,formData.id)
       .then(res => {
         setSubmit(false);
         Swal.fire(
@@ -176,10 +165,29 @@ const ResidentForm = (props) => {
     });
     return items;
   }
+  const backToTable = () => {
+    props.dispatch({
+      type: "SET_RESIDENT",
+      data: {}
+    });
+    props.dispatch({
+      type: "SET_RESIDENT_FORM_STATUS",
+      data: "hide"
+    });
+    props.dispatch({
+      type: "SET_RESIDENT_FORM_TYPE",
+      data: "create"
+    });
+  }
   return (
     <div>
+      <p>
+        <a href="#!" onClick={() => backToTable()}>
+          <ArrowLeftOutlined /> Back to list of residents
+        </a>
+      </p>
       <Title style={{textAlign: "center"}}>
-        {(formType=="create" ? "ADD" : "EDIT")} RESIDENT
+        {(props.formType=="create" ? "ADD" : "EDIT")} RESIDENT
       </Title>
       <Divider />
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>

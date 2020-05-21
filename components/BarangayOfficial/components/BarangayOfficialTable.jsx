@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import Link from 'next/link'
 import API from '../../../api'
-import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { Table, Typography, Divider, Pagination, Modal, Select, Input, Button } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import _isEmpty from 'lodash/isEmpty'
@@ -17,19 +17,19 @@ const { confirm } = Modal;
 function mapStateToProps(state) {
   return {
     barangays: state.resident.barangays,
-    barangayOfficials: state.barangayOfficial.barangayOfficials,
-    pagination: state.barangayOfficial.tablePagination,
-    searchData: state.barangayOfficial.searchData,
   };
 }
 
 const ResidentTable = (props) => {
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
     getBarangayOfficials();
     loadBarangays();
   }, []);
-
+  
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({});
+  const [barangayOfficials, setBarangayOfficials] = useState([]);
+  const [searchData, setSearchData] = useState({});
 
   const loadBarangays = () => {
     if(isEmpty(props.barangays)){
@@ -41,23 +41,16 @@ const ResidentTable = (props) => {
     setLoading(true);
     let filterOptions = {
       page: page,
-      ...props.searchData
+      ...searchData
     }
-    console.log(filterOptions);
     
     API.BarangayOfficial.all(filterOptions)
     .then((res) => {
       let result = res.data.barangay_officials.data;
       let resultPagination = res.data.barangay_officials.meta.pagination;
       setLoading(false);
-      props.dispatch({
-        type: "SET_BARANGAY_OFFICIAL",
-        data: result
-      })
-      props.dispatch({
-        type: "SET_BARANGAY_OFFICIAL_PAGINATION",
-        data: resultPagination
-      })
+      setBarangayOfficials(result);
+      setPagination(resultPagination);
     })
     .catch((err) => {
       setLoading(false);
@@ -95,23 +88,14 @@ const ResidentTable = (props) => {
   }
 
   const setBarangayFilter = (value) => {
-    props.dispatch({
-      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
-      data: {...props.searchData,psgc_id:value}
-    })
+    setSearchData({...searchData,psgc_id:value});
   }
   const setSearchString = (e) => {
     let string = e.target.value;
-    props.dispatch({
-      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
-      data: {...props.searchData,query:string}
-    })
+    setSearchData({...searchData,query:string});
   }
   const setPositionFilter = (value) => {
-    props.dispatch({
-      type: "SET_BARANGAY_OFFICIAL_SEARCH_DATA",
-      data: {...props.searchData,position:value}
-    })
+    setSearchData({...searchData,position:value});
   }
 
   const deleteBarangayOfficial = (barangayOfficial) => {
@@ -147,7 +131,33 @@ const ResidentTable = (props) => {
     });
   }
 
-  const dataSource = props.barangayOfficials;
+  const editBarangayOfficial = (official) => {
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL",
+      data: official
+    });
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL_FORM_STATUS",
+      data: "show"
+    });
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL_FORM_TYPE",
+      data: "update"
+    });
+  }
+
+  const createBarangayOfficial = () => {
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL_FORM_STATUS",
+      data: "show"
+    });
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL",
+      data: {}
+    });
+  }
+
+  const dataSource = barangayOfficials;
   
   const columns = [
     {
@@ -197,9 +207,7 @@ const ResidentTable = (props) => {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link href={{ pathname: '/barangay-official', query: { id: record.id } }}>
-            <a>Edit</a>
-          </Link>
+          <a href="#!" onClick={ () => editBarangayOfficial(record) }>Edit</a>
           &nbsp;|&nbsp;
           <a href="#!" onClick={ () => confirmDeleteBarangayOfficial(record) }>
             Delete
@@ -210,9 +218,9 @@ const ResidentTable = (props) => {
   ];
 
   const paginationConfig = {
-    defaultCurrent: !_isEmpty(props.pagination) ? props.pagination.current_page : 0,
-    total: !_isEmpty(props.pagination) ? props.pagination.total : 0,
-    pageSize: !_isEmpty(props.pagination) ? props.pagination.per_page : 0,
+    defaultCurrent: !_isEmpty(pagination) ? pagination.current_page : 0,
+    total: !_isEmpty(pagination) ? pagination.total : 0,
+    pageSize: !_isEmpty(pagination) ? pagination.per_page : 0,
   };
 
   const handleResidentPage = (val) => {
@@ -225,14 +233,16 @@ const ResidentTable = (props) => {
       <Title style={{textAlign: "center"}}>
         BARANGAY OFFICIALS
       </Title>
-      <Divider />
+      <Button type="primary"  style={{ background: "green" }} icon={<PlusOutlined />} onClick={() => createBarangayOfficial()}>
+        Add
+      </Button>
       <Search
         allowClear
         placeholder="input search text"
         onChange={value => setSearchString(value)}
         style={{ width: 200 }}
-        onSearch={getBarangayOfficials}
-        defaultValue={props.searchData.query}
+        onSearch={() => getBarangayOfficials()}
+        defaultValue={searchData.query}
       />
       <Select
         showSearch
@@ -244,7 +254,7 @@ const ResidentTable = (props) => {
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
-        defaultValue={props.searchData.psgc_id}
+        defaultValue={searchData.psgc_id}
       >
         {populateBarangaySelection(props.barangays)}
       </Select>
@@ -253,20 +263,21 @@ const ResidentTable = (props) => {
         placeholder="Select Position"
         style={{ width: 200 }}
         onChange={setPositionFilter}
-        defaultValue={props.searchData.is_registered_voter}
+        defaultValue={searchData.is_registered_voter}
       >
         <Option value="PUNONG BARANGAY">PUNONG BARANGAY</Option>
         <Option value="SANGGUNIANG BARANGAY MEMBER">SANGGUNIANG BARANGAY MEMBER</Option>
         <Option value="SK CHAIRPERSON">SK CHAIRPERSON</Option>
         <Option value="OTHERS">OTHERS</Option>
       </Select>
-      <Button type="primary" icon={<SearchOutlined />} onClick={getBarangayOfficials}>
+      <Button type="primary" icon={<SearchOutlined />} onClick={() => getBarangayOfficials()}>
         Search
       </Button>
+      <Divider />
       <Table dataSource={dataSource} columns={columns} pagination={false} loading={loading} />
       <Divider />
 
-      {!_isEmpty(props.barangayOfficials) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
+      {!_isEmpty(barangayOfficials) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
 
     </div>
   );

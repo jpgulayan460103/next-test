@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import Link from 'next/link'
 import API from '../../../api'
-import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { Table, Typography, Divider, Pagination, Modal, Select, Input, Button } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import _isEmpty from 'lodash/isEmpty'
@@ -17,18 +17,18 @@ const { confirm } = Modal;
 function mapStateToProps(state) {
   return {
     barangays: state.resident.barangays,
-    residents: state.resident.residents,
-    pagination: state.resident.tablePagination,
-    searchData: state.resident.searchData,
   };
 }
 
 const ResidentTable = (props) => {
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
     getResidents();
     loadBarangays();
   }, []);
+  const [loading, setLoading] = useState(false);
+  const [residents, setResidents] = useState([]);
+  const [pagination, setPagination] = useState({});
+  const [searchData, setSearchData] = useState({});
 
   const loadBarangays = () => {
     if(isEmpty(props.barangays)){
@@ -40,21 +40,15 @@ const ResidentTable = (props) => {
     setLoading(true);
     let filterOptions = {
       page: page,
-      ...props.searchData
+      ...searchData
     }
     API.Resident.all(filterOptions)
     .then((res) => {
       let result = res.data.residents.data;
       let resultPagination = res.data.residents.meta.pagination;
       setLoading(false);
-      props.dispatch({
-        type: "SET_RESIDENTS",
-        data: result
-      })
-      props.dispatch({
-        type: "SET_RESIDENTS_PAGINATION",
-        data: resultPagination
-      })
+      setResidents(result);
+      setPagination(resultPagination);
     })
     .catch((err) => {
       setLoading(false);
@@ -92,23 +86,14 @@ const ResidentTable = (props) => {
   }
 
   const setBarangayFilter = (value) => {
-    props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
-      data: {...props.searchData,psgc_id:value}
-    })
+    setSearchData({...searchData,psgc_id:value});
   }
   const setSearchString = (e) => {
     let string = e.target.value;
-    props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
-      data: {...props.searchData,query:string}
-    })
+    setSearchData({...searchData,query:string});
   }
   const setVotersRegistrationFilter = (value) => {
-    props.dispatch({
-      type: "SET_RESIDENTS_SEARCH_DATA",
-      data: {...props.searchData,is_registered_voter:value}
-    })
+    setSearchData({...searchData,is_registered_voter:value});
   }
 
   const deleteResident = (resident) => {
@@ -144,7 +129,33 @@ const ResidentTable = (props) => {
     });
   }
 
-  const dataSource = props.residents;
+  const editResident = (official) => {
+    props.dispatch({
+      type: "SET_RESIDENT",
+      data: official
+    });
+    props.dispatch({
+      type: "SET_RESIDENT_FORM_STATUS",
+      data: "show"
+    });
+    props.dispatch({
+      type: "SET_RESIDENT_FORM_TYPE",
+      data: "update"
+    });
+  }
+
+  const createResident = () => {
+    props.dispatch({
+      type: "SET_RESIDENT_FORM_STATUS",
+      data: "show"
+    });
+    props.dispatch({
+      type: "SET_RESIDENT",
+      data: {}
+    });
+  }
+
+  const dataSource = residents;
   
   const columns = [
     {
@@ -168,17 +179,15 @@ const ResidentTable = (props) => {
     },
     {
       title: 'Contact Number',
-      dataIndex: 'contact_number_1',
-      key: 'contact_number_1',
+      dataIndex: 'contact_number',
+      key: 'contact_number',
     },
     {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link href={{ pathname: '/resident', query: { id: record.id } }}>
-            <a>Edit</a>
-          </Link>
+          <a href="#!" onClick={ () => editResident(record) }>Edit</a>
           &nbsp;|&nbsp;
           <a href="#!" onClick={ () => confirmDeleteResident(record) }>
             Delete
@@ -189,9 +198,9 @@ const ResidentTable = (props) => {
   ];
 
   const paginationConfig = {
-    defaultCurrent: !_isEmpty(props.pagination) ? props.pagination.current_page : 0,
-    total: !_isEmpty(props.pagination) ? props.pagination.total : 0,
-    pageSize: !_isEmpty(props.pagination) ? props.pagination.per_page : 0,
+    defaultCurrent: !_isEmpty(pagination) ? pagination.current_page : 0,
+    total: !_isEmpty(pagination) ? pagination.total : 0,
+    pageSize: !_isEmpty(pagination) ? pagination.per_page : 0,
   };
 
   const handleResidentPage = (val) => {
@@ -204,14 +213,15 @@ const ResidentTable = (props) => {
       <Title style={{textAlign: "center"}}>
         RESIDENTS
       </Title>
-      <Divider />
+      <Button type="primary"  style={{ background: "green" }} icon={<PlusOutlined />} onClick={() => createResident()}>
+        Add
+      </Button>
       <Search
         allowClear
         placeholder="input search text"
         onChange={value => setSearchString(value)}
         style={{ width: 200 }}
         onSearch={getResidents}
-        defaultValue={props.searchData.query}
       />
       <Select
         showSearch
@@ -223,7 +233,6 @@ const ResidentTable = (props) => {
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
-        defaultValue={props.searchData.psgc_id}
       >
         {populateBarangaySelection(props.barangays)}
       </Select>
@@ -232,7 +241,6 @@ const ResidentTable = (props) => {
         placeholder="Select Voters Registration Status"
         style={{ width: 200 }}
         onChange={setVotersRegistrationFilter}
-        defaultValue={props.searchData.is_registered_voter}
       >
         <Option value="1">Registered</Option>
         <Option value="0">Not Registered</Option>
@@ -240,10 +248,11 @@ const ResidentTable = (props) => {
       <Button type="primary" icon={<SearchOutlined />} onClick={getResidents}>
         Search
       </Button>
+      <Divider />
       <Table dataSource={dataSource} columns={columns} pagination={false} loading={loading} />
       <Divider />
 
-      {!_isEmpty(props.residents) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
+      {!_isEmpty(residents) ? (<Pagination {...paginationConfig} onChange={handleResidentPage} />): ""}
 
     </div>
   );

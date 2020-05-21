@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import React, { Component } from 'react';
-import ResidentTable from '../components/Resident/components/ResidentTable'
+import Resident from '../components/Resident/Resident'
 import { Provider } from 'react-redux'
 import store from '../store'
 import Layouts from './../layouts/layouts'
@@ -20,7 +20,7 @@ export class residentsIndex extends Component {
           <title>Residents</title>
         </Head>
         <Layouts>
-          <ResidentTable />
+          <Resident />
         </Layouts>
       </Provider>
     );

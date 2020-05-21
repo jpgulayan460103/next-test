@@ -2,6 +2,7 @@ import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router'
 import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
+import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
 import _map from 'lodash/map'
@@ -21,6 +22,8 @@ function mapStateToProps(state) {
     formData: state.barangayOfficial.formData,
     formError: state.barangayOfficial.formError,
     barangay: state.resident.barangays,
+    formType: state.barangayOfficial.formType,
+    selectedBarangayOfficial: state.barangayOfficial.selectedBarangayOfficial,
   };
 }
 const handleClick = () => {}
@@ -35,7 +38,6 @@ const tailLayout = {
 };
 const BarangayOfficialForm = (props) => {
 
-  const [formType, setformType] = useState("create");
   const [formData, setFormData] = useState({});
   const [submit, setSubmit] = useState(false);
   const [contactNumber, setContactNumber] = useState([]);
@@ -43,14 +45,13 @@ const BarangayOfficialForm = (props) => {
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
   const { id } = router.query
-  
   useEffect(() => {
     getBarangay();
-    if(id){
-      setformType("update");
-      getBarangayOfficial(id);
-    }
   }, []);
+  useEffect(() => {
+    loadBarangayOfficialData();
+  }, [props.selectedBarangayOfficial]);
+  
   const getBarangay = () => {
     if(_isEmpty(props.barangay)){
       API.BarangayOfficial.getBarangay()
@@ -70,36 +71,22 @@ const BarangayOfficialForm = (props) => {
       ;
     }
   }
-  const getBarangayOfficial = (id) => {
-    API.BarangayOfficial.get(id)
-    .then(res => {
-      let barangayOfficials = res.data.barangay_officials;
-      barangayOfficials.birth_date = moment(barangayOfficials.birth_date, "MM-DD-YYYY");
-      barangayOfficials.elected_date = moment(barangayOfficials.elected_date, "MM-DD-YYYY");
+  const loadBarangayOfficialData = () => {
+    let loadedData = props.selectedBarangayOfficial;
+    if(_isEmpty(loadedData)){
+      setFormData({});
+    }else{
+      loadedData.birth_date = moment(loadedData.birth_date, "MM-DD-YYYY");
+      loadedData.elected_date = moment(loadedData.elected_date, "MM-DD-YYYY");
       setFormData({
-        ...barangayOfficials
+        ...loadedData
       })
       formRef.current.setFieldsValue({
-        ...barangayOfficials
+        ...loadedData
       });
-    })
-    .catch(err => {
-      console.log(err);
-      Swal.fire({
-        title: 'Error',
-        text: 'The system cannot find what you are looking for. It may not have existed or it has been removed.',
-        icon: 'error',
-        confirmButtonText: 'Back to Home',
-        onClose: () => {
-          Router.push('/')
-        }
-      })
-    })
-    .then(res => {
-      // console.log(barangay);
-    })
-    ;
+    }
   }
+
   const setFormFields = (e) => {
     setFormData({
       ...formData,
@@ -112,7 +99,7 @@ const BarangayOfficialForm = (props) => {
       type: "BARANGAY_OFFICIAL_FORM_SUBMIT",
       data: {}
     })
-    if(formType == "create"){
+    if(props.formType == "create"){
       API.BarangayOfficial.add(formData)
       .then(res => {
         setSubmit(false);
@@ -142,7 +129,7 @@ const BarangayOfficialForm = (props) => {
         setSubmit(false);
       })
     }else{
-      API.BarangayOfficial.update(formData,id)
+      API.BarangayOfficial.update(formData,formData.id)
       .then(res => {
         setSubmit(false);
         Swal.fire(
@@ -211,10 +198,30 @@ const BarangayOfficialForm = (props) => {
     });
     return items;
   }
+
+  const backToTable = () => {
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL",
+      data: {}
+    });
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL_FORM_STATUS",
+      data: "hide"
+    });
+    props.dispatch({
+      type: "SET_BARANGAY_OFFICIAL_FORM_TYPE",
+      data: "create"
+    });
+  }
   return (
     <div>
+      <p>
+        <a href="#!" onClick={() => backToTable()}>
+          <ArrowLeftOutlined /> Back to list of barangay officials
+        </a>
+      </p>
       <Title style={{textAlign: "center"}}>
-        {(formType=="create" ? "ADD" : "EDIT")} BARANGAY OFFICIAL
+        {(props.formType=="create" ? "ADD" : "EDIT")} BARANGAY OFFICIAL
       </Title>
       <Divider />
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>

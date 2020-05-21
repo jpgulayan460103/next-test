@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import ResidentForm from './components/ResidentForm'
-import { Table, Tag } from 'antd';
+import BarangayOfficialTable from './components/BarangayOfficialTable'
+import BarangayOfficialForm from './components/BarangayOfficialForm'
 
 function mapStateToProps(state) {
   return {
-    
+    formType: state.barangayOfficial.formType,
+    formStatus: state.barangayOfficial.formStatus,
   };
 }
 
-const Resident = (props) => {
+const BarangayOfficial = (props) => {
   return (
-    <div className="row">
-      <div className="col-md-12">
-        <ResidentForm />
-      </div>
+    <div>
+      { (props.formStatus == "hide" ? <BarangayOfficialTable /> : <BarangayOfficialForm />) }
     </div>
   );
 }
 
 
-
 export default connect(
   mapStateToProps,
-)(Resident);
+)(BarangayOfficial);
