@@ -4,7 +4,8 @@ import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Router from 'next/router'
 
 
-axios.custom_base_url = "http://api-panabosanfrancisco.systemph.com/";
+axios.defaults.baseURL = (process.env.NODE_ENV == "development" ? process.env.DEVELOPMENT_URL : process.env.PRODUCTION_URL);
+
 if(ls('user')){
   let token = ls('user').access_token;
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
