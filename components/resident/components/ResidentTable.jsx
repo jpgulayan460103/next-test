@@ -86,7 +86,7 @@ const ResidentTable = (props) => {
   }
 
   const setBarangayFilter = (value) => {
-    setSearchData({...searchData,psgc_id:value});
+    setSearchData({...searchData,barangay_id:value});
   }
   const setSearchString = (e) => {
     let string = e.target.value;
@@ -168,7 +168,7 @@ const ResidentTable = (props) => {
       key: 'address',
       render: (text, record) => (
         <span>
-          { `${record.purok_sitio} ${record.street_address}, ${record.psgc.brgy_name}, ${record.psgc.city_name} ${record.psgc.province_name}` }
+          { `${record.purok_sitio} ${record.street_address}, ${record.barangay.barangay_name}, ${record.barangay.city_name} ${record.barangay.province_name}` }
         </span>
       ),
     },

@@ -228,7 +228,7 @@ const ResidentForm = (props) => {
               <Form.Item label="Street Address" name="street_address" hasFeedback {...displayErrors('street_address')}>
                 <Input autoComplete="off" placeholder="Enter Street Address" />
               </Form.Item>
-              <Form.Item label="Barangay" name="psgc_id" hasFeedback {...displayErrors('psgc_id')}>
+              <Form.Item label="Barangay" name="barangay_id" hasFeedback {...displayErrors('barangay_id')}>
                 <Select
                   showSearch
                   placeholder="Select a Barangay"

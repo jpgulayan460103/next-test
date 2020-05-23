@@ -228,7 +228,7 @@ const BarangayOfficialForm = (props) => {
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
         <div className="row">
           <div className="col-md-6 col-lg-4">
-            <Form.Item label="Barangay" name="psgc_id" hasFeedback {...displayErrors('psgc_id')}>
+            <Form.Item label="Barangay" name="barangay_id" hasFeedback {...displayErrors('barangay_id')}>
               <Select
                 showSearch
                 placeholder="Select a Barangay"

@@ -46,8 +46,8 @@ const SmsBlastForm = (props) => {
     wrapperCol: { offset: 8, span: 16 },
   };
   const setFormFields = (e) => {
-    if(e.psgc_id && e.psgc_id == "all"){
-      e.psgc_id = "";
+    if(e.barangay_id && e.barangay_id == "all"){
+      e.barangay_id = "";
     }
     setFormData({
       ...formData,
@@ -211,7 +211,7 @@ const SmsBlastForm = (props) => {
       <Divider />
 
       <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
-        <Form.Item label="Barangay" name="psgc_id" hasFeedback {...displayErrors('psgc_id')}>
+        <Form.Item label="Barangay" name="barangay_id" hasFeedback {...displayErrors('barangay_id')}>
           <Select
             showSearch
             placeholder="Select a Barangay"

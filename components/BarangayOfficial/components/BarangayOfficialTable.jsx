@@ -88,7 +88,7 @@ const ResidentTable = (props) => {
   }
 
   const setBarangayFilter = (value) => {
-    setSearchData({...searchData,psgc_id:value});
+    setSearchData({...searchData,barangay_id:value});
   }
   const setSearchString = (e) => {
     let string = e.target.value;
@@ -170,7 +170,7 @@ const ResidentTable = (props) => {
       key: 'address',
       render: (text, record) => (
         <span>
-          { `${record.psgc.brgy_name}` }
+          { `${record.barangay.barangay_name}` }
         </span>
       ),
     },
@@ -179,7 +179,7 @@ const ResidentTable = (props) => {
       key: 'city',
       render: (text, record) => (
         <span>
-          { `${record.psgc.city_name}` }
+          { `${record.barangay.city_name}` }
         </span>
       ),
     },
@@ -188,7 +188,7 @@ const ResidentTable = (props) => {
       key: 'province',
       render: (text, record) => (
         <span>
-          { `${record.psgc.province_name}` }
+          { `${record.barangay.province_name}` }
         </span>
       ),
     },
@@ -254,7 +254,7 @@ const ResidentTable = (props) => {
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
-        defaultValue={searchData.psgc_id}
+        defaultValue={searchData.barangay_id}
       >
         {populateBarangaySelection(props.barangays)}
       </Select>

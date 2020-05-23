@@ -17,7 +17,7 @@ export default {
     });
   },
   getBarangay(){
-    return axios.get(`api/psgcs/dropdown`);
+    return axios.get(`api/barangays/dropdown`);
   },
   get(id){
     return axios.get(`api/residents/${id}`);
