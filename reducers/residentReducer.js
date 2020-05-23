@@ -32,6 +32,9 @@ export default function residentReducer(state = initialState(), action) {
     case 'SET_RESIDENT_FORM_TYPE':
       state.formType = action.data;
       return state
+    case 'SET_INITIAL_STATE':
+      state = initialState();
+      return state
     default:
       return state
   }

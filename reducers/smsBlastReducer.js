@@ -27,6 +27,9 @@ export default function smsBlastReducer(state = initialState(), action) {
         state.sentCount = 0;
       }
       return state
+    case 'SET_INITIAL_STATE':
+      state = initialState();
+      return state
     default:
       return state
   }

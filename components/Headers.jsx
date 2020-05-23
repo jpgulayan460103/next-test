@@ -70,6 +70,10 @@ class Headers extends Component {
       type: "USER_LOGIN_FAILED",
       data: {}
     });
+    this.props.dispatch({
+      type: "SET_INITIAL_STATE",
+      data: {}
+    });
     Router.push('/login')
   }
   redirect = (redirectTo) => {

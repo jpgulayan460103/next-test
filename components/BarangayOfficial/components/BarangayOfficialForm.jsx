@@ -79,6 +79,10 @@ const BarangayOfficialForm = (props) => {
     }else{
       loadedData.birth_date = moment(loadedData.birth_date, "MM-DD-YYYY");
       loadedData.elected_date = moment(loadedData.elected_date, "MM-DD-YYYY");
+      if(loadedData.username){
+        loadedData.allow_login = "checked";
+        setAddUserAccount(true);
+      }
       setFormData({
         ...loadedData
       })
