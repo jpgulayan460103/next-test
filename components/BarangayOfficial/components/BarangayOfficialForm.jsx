@@ -280,7 +280,7 @@ const BarangayOfficialForm = (props) => {
               <Input autoComplete="off" placeholder="Enter Committee" />
             </Form.Item>
             <Form.Item label="Elected Date" name="elected_date" hasFeedback {...displayErrors('elected_date')}>
-              <DatePicker style={{width:'100%'}} format="MM-DD-YYYY"/>
+              <DatePicker style={{width:'100%'}} picker="year"/>
             </Form.Item>
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit" disabled={submit}>
