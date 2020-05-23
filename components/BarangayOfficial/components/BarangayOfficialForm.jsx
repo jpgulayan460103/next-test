@@ -1,7 +1,7 @@
 import React, { useState,useEffect} from 'react';
 import { connect } from 'react-redux';
 import { useRouter } from 'next/router'
-import { Form, Input, Button, Divider, Select, DatePicker, Typography } from 'antd';
+import { Form, Input, Button, Divider, Select, DatePicker, Typography, Checkbox  } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import API from '../../../api'
 import _forEach from 'lodash/forEach'
@@ -41,6 +41,7 @@ const BarangayOfficialForm = (props) => {
   const [formData, setFormData] = useState({});
   const [submit, setSubmit] = useState(false);
   const [contactNumber, setContactNumber] = useState([]);
+  const [addUserAccount, setAddUserAccount] = useState(false);
   const formRef = React.useRef();
   const router = useRouter()
   router.query = queryString.parse(router.asPath.split(/\?/)[1]);
@@ -282,6 +283,17 @@ const BarangayOfficialForm = (props) => {
             <Form.Item label="Elected Date" name="elected_date" hasFeedback {...displayErrors('elected_date')}>
               <DatePicker style={{width:'100%'}} picker="year"/>
             </Form.Item>
+            <Form.Item label=" " name="allow_login" colon={false}  valuePropName="checked">
+              <Checkbox onChange={() => setAddUserAccount(!addUserAccount)}>Add access to site</Checkbox>
+            </Form.Item>
+            {addUserAccount ? (<>
+              <Form.Item label="Username" name="username" hasFeedback {...displayErrors('username')}>
+                <Input autoComplete="off" placeholder="Enter Username" />
+              </Form.Item>
+              <Form.Item label="Password" name="password" hasFeedback {...displayErrors('password')}>
+                <Input.Password autoComplete="off" placeholder="Enter Password" />
+              </Form.Item>
+            </>) : ""}
             <Form.Item {...tailLayout}>
               <Button type="primary" htmlType="submit" disabled={submit}>
                 Submit
