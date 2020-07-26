@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Form, Input, Button, Checkbox } from 'antd';
 import API from '../api'
 import Router from 'next/router'
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import ls from 'local-storage'
 
 function mapStateToProps(state) {
   return {
@@ -25,50 +26,51 @@ const tailLayout = {
   },
 };
 
-class LoginForm extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      
-    }
-    this.handleTest = this.handleTest.bind(this);
-    this.onFinish = this.onFinish.bind(this);
-    this.onFinishFailed = this.onFinishFailed.bind(this);
-  }
-  handleTest = () => {
-    API.User.getUsers()
-      .then(res => {
-        
-      })
-      .catch(err => {
 
-      })
-      .then(res => {})
-  }
-  onFinish = values => {
-    // console.log('Success:', values);
+const LoginForm = props => {
+  const [submit, setSubmit] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const onSubmit = values => {
+    setSubmit(true);
     API.User.login(values)
     .then(res => {
-      this.props.dispatch({
-        type: "USER_LOGIN_SUCCESSFUL",
-        data: res.data
-      });
-      Router.push('/')
+      setSubmit(false);
+      let user = res.data.user;
+      let createdToken = res.data.createdToken;
+      user.createdToken = createdToken;
+      ls.set('user',user);
+      if(user.role == "admin"){
+        window.location = "/encoding-report";
+      }else{
+        location.reload();
+      }
     })
     .catch(err => {
-      this.props.dispatch({
-        type: "USER_LOGIN_FAILED",
-        data: err
-      });
-      Router.push('/login')
+      console.log(err);
+      
+      setSubmit(false);
+      if(err.response.status == 422){
+        setFormError(err.response.data);
+      }
     })
-    .then(res => {})
+    .then(res => {
+      setSubmit(false);
+    })
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const displayErrors = () => {
+    if(formError){
+      return {
+        validateStatus: 'error',
+        help: formError.message
+      }
+    }
   }
-  onFinishFailed = errorInfo => {
-    // console.log('Failed:', errorInfo);
-  }
-  render() {
-    return (
+  return (
       <div className="pt-16">
         <img src="/images/logo.png" className="h-40 w-40 rounded-full mx-auto" alt=""/>
         <Form
@@ -78,12 +80,13 @@ class LoginForm extends Component {
           initialValues={{
             remember: true,
           }}
-          onFinish={this.onFinish}
-          onFinishFailed={this.onFinishFailed}
+          onFinish={onSubmit}
+          onFinishFailed={onFinishFailed}
         >
           <Form.Item
             label="Username"
             name="username"
+            {...displayErrors()}
             rules={[
               {
                 required: true,
@@ -117,9 +120,9 @@ class LoginForm extends Component {
 
         </Form>
       </div>
-    );
-  }
+  );
 }
+
 
 export default connect(
   mapStateToProps,

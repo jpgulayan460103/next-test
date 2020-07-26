@@ -93,12 +93,26 @@ const BarangayOfficialForm = (props) => {
   }
 
   const setFormFields = (e) => {
+    let transformedValue = {};
+    _forEach(e, function(value, key) {
+      switch (key) {
+        case "birth_date":
+        case "elected_date":
+          transformedValue[key] = moment.parseZone(value).utc();
+          break;
+      
+        default:
+          transformedValue[key] = value;
+          break;
+      }
+    });
     setFormData({
       ...formData,
-      ...e
+      ...transformedValue
     })
   }
   const formSubmit = _debounce(() => {
+    console.log(formData);
     setSubmit(true);
     props.dispatch({
       type: "BARANGAY_OFFICIAL_FORM_SUBMIT",
@@ -263,7 +277,7 @@ const BarangayOfficialForm = (props) => {
               </Select>
             </Form.Item>
             <Form.Item label="Birth Date" name="birth_date" hasFeedback {...displayErrors('birth_date')}>
-              <DatePicker style={{width:'100%'}} format="MM-DD-YYYY"/>
+              <DatePicker style={{width:'100%'}} format="M/D/YYYY"/>
             </Form.Item>
             <Form.Item label="Birth Place" name="birth_place" hasFeedback {...displayErrors('birth_place')}>
               <Input autoComplete="off" placeholder="Enter Birth Place" />

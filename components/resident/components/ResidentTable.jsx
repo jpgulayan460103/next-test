@@ -47,6 +47,10 @@ const ResidentTable = (props) => {
       let result = res.data.residents.data;
       let resultPagination = res.data.residents.meta.pagination;
       setLoading(false);
+      result.map(item => {
+        item.key = `residents-${item.id}`
+        return item;
+      });
       setResidents(result);
       setPagination(resultPagination);
     })
@@ -168,7 +172,7 @@ const ResidentTable = (props) => {
       key: 'address',
       render: (text, record) => (
         <span>
-          { `${record.purok_sitio} ${record.street_address}, ${record.barangay.barangay_name}, ${record.barangay.city_name} ${record.barangay.province_name}` }
+          { `${ record.purok_sitio ? record.purok_sitio : "" } ${ record.street_address ? record.street_address : "" } ${record.barangay.barangay_name}, ${record.barangay.city_name} ${record.barangay.province_name}` }
         </span>
       ),
     },

@@ -49,6 +49,10 @@ const ResidentTable = (props) => {
       let result = res.data.barangay_officials.data;
       let resultPagination = res.data.barangay_officials.meta.pagination;
       setLoading(false);
+      result.map(item => {
+        item.key = `barangay-official-${item.id}`
+        return item;
+      });
       setBarangayOfficials(result);
       setPagination(resultPagination);
     })

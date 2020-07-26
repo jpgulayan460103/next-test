@@ -11,26 +11,45 @@ const initialState = () => {
 }
 
 export default function residentReducer(state = initialState(), action) {
+  let newState = {};
   switch (action.type) {
     case 'BARANGAY_OFFICIAL_FORM_SUBMIT':
+      newState = {
+        ...state,
+        formError: {}
+      };
       state.formError = {};
-      return state
+      break;
     case 'BARANGAY_OFFICIAL_FORM_ERROR':
-      state.formError = action.data;
-      return state
+      newState = {
+        ...state,
+        formError: action.data
+      };
+      break;
     case 'SET_BARANGAY_OFFICIAL':
-      state.selectedBarangayOfficial = action.data;
-      return state
+      newState = {
+        ...state,
+        selectedBarangayOfficial: action.data
+      };
+      break;
     case 'SET_BARANGAY_OFFICIAL_FORM_STATUS':
-      state.formStatus = action.data;
-      return state
+      newState = {
+        ...state,
+        formStatus: action.data
+      };
+      break;
     case 'SET_BARANGAY_OFFICIAL_FORM_TYPE':
-      state.formType = action.data;
-      return state
+      newState = {
+        ...state,
+        formType: action.data
+      };
+      break;
     case 'SET_INITIAL_STATE':
       state = initialState();
-      return state
+      break;
     default:
-      return state
+      return state;
+      break;
   }
+  return newState;
 }

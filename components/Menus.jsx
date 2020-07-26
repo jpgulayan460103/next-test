@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
 import queryString from "query-string";
 import { useRouter } from 'next/router'
+import Router from 'next/router'
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -36,6 +37,18 @@ const Menus = (props) => {
     }
   }
 
+  const logout = () => {
+    props.dispatch({
+      type: "USER_LOGIN_FAILED",
+      data: {}
+    });
+    props.dispatch({
+      type: "SET_INITIAL_STATE",
+      data: {}
+    });
+    Router.push('/login')
+  }
+
   const showSmsProgress = (props) => {
     if(props.sendStatus && props.recipients.threads){
       return (
@@ -50,7 +63,7 @@ const Menus = (props) => {
           <br />
           <br />
           <div className="logo mr-1"  >
-          {/* <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/> */}
+          <img src="/images/logo.png"  className="h-auto p-2 pt-3" alt=""/>
           </div>
           {(!collapsed ? (<div className="mb-32 pb-2"></div>)  : (<div className="mb-2 pb-2"></div>)   )}
           <Menu theme="dark" defaultSelectedKeys={[route]} mode="inline" defaultOpenKeys={['residents','officials']}>
@@ -81,6 +94,10 @@ const Menus = (props) => {
                   SMS Blast {showSmsProgress(props)}
                 </a>
               </Link>
+            </Menu.Item>
+            <Menu.Item key="/logout">
+              <UserOutlined />
+                <a onClick={() => logout() }>Logout</a>
             </Menu.Item>
           </Menu>
         </Sider>

@@ -37,8 +37,8 @@ const Layouts = ({children}) => {
       <Layout style={{ minHeight: '100vh' }}>
         <Menus />
         <Layout className="site-layout">
-          <Header />
-          <Headers />
+          {/* <Header /> */}
+          {/* <Headers /> */}
           <br />
           <Content style={{...containerLayout.containerStyle}}>
             <div {...containerLayout.containerChildDivClassName} style={{ padding: 24, minHeight: '100%' }}>

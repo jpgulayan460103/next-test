@@ -58,8 +58,8 @@ const ResidentForm = (props) => {
     if(_isEmpty(loadedData)){
       setFormData({});
     }else{
-      loadedData.birth_date = moment(loadedData.birth_date, "MM-DD-YYYY");
-      loadedData.voters_registration_date = moment(loadedData.voters_registration_date, "MM-DD-YYYY");
+      loadedData.birth_date = moment(loadedData.birth_date, "M/D/YYYY");
+      loadedData.voters_registration_date = moment(loadedData.voters_registration_date, "M/D/YYYY");
       setFormData({
         ...loadedData
       })
@@ -78,9 +78,22 @@ const ResidentForm = (props) => {
     wrapperCol: { offset: 8, span: 16 },
   };
   const setFormFields = (e) => {
+    let transformedValue = {};
+    _forEach(e, function(value, key) {
+      switch (key) {
+        case "birth_date":
+        case "voters_registration_date":
+          transformedValue[key] = moment.parseZone(value).utc();
+          break;
+      
+        default:
+          transformedValue[key] = value;
+          break;
+      }
+    });
     setFormData({
       ...formData,
-      ...e
+      ...transformedValue
     })
   }
   const formSubmit = _debounce(() => {
@@ -89,7 +102,7 @@ const ResidentForm = (props) => {
       type: "RESIDENT_FORM_SUBMIT",
       data: {}
     })
-    if(formType == "create"){
+    if(props.formType == "create"){
       API.Resident.add(formData)
       .then(res => {
         setSubmit(false);
@@ -214,8 +227,8 @@ const ResidentForm = (props) => {
                 <Option value="FEMALE">FEMALE</Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Birth Date" name="birth_date" hasFeedback {...displayErrors('birth_date')}>
-              <DatePicker style={{width:'100%'}} format="MM-DD-YYYY"/>
+            <Form.Item label="Birth Date (M/D/YYYY)" name="birth_date" hasFeedback {...displayErrors('birth_date')}>
+              <DatePicker style={{width:'100%'}} format="M/D/YYYY"/>
             </Form.Item>
             <Form.Item label="Birth Place" name="birth_place" hasFeedback {...displayErrors('birth_place')}>
               <Input autoComplete="off" placeholder="Enter Birth Place" />
@@ -269,8 +282,8 @@ const ResidentForm = (props) => {
             {
               (formData.is_registered_voter == "YES" ? (
                 <>
-                  <Form.Item label="Registration Date" name="voters_registration_date" hasFeedback {...displayErrors('voters_registration_date')}>
-                    <DatePicker style={{width:'100%'}} format="MM-DD-YYYY"/>
+                  <Form.Item label="Registration Date (M/D/YYYY)" name="voters_registration_date" hasFeedback {...displayErrors('voters_registration_date')}>
+                    <DatePicker style={{width:'100%'}} format="M/D/YYYY"/>
                   </Form.Item>
                   <Form.Item label="Voters ID Number" name="voters_registration_number" hasFeedback {...displayErrors('voters_registration_number')}>
                     <Input autoComplete="off" placeholder="Enter Voters ID Number" />
