@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
-import Link from 'next/link'
 import API from '../../../api'
 import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { Table, Typography, Divider, Pagination, Modal, Select, Input, Button } from 'antd';
@@ -11,7 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 
 const { Option } = Select;
 const { Search } = Input;
-const { Title } = Typography;
+const { Title, Link } = Typography;
 const { confirm } = Modal;
 
 function mapStateToProps(state) {
@@ -191,11 +190,9 @@ const ResidentTable = (props) => {
       key: 'action',
       render: (text, record) => (
         <span>
-          <a href="#!" onClick={ () => editResident(record) }>Edit</a>
+          <Link onClick={() => {editResident(record)}}>Edit</Link>
           &nbsp;|&nbsp;
-          <a href="#!" onClick={ () => confirmDeleteResident(record) }>
-            Delete
-          </a>
+          <Link onClick={() => {confirmDeleteResident(record)}}>Delete</Link>
         </span>
       ),
     }

@@ -13,7 +13,7 @@ import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import Router from 'next/router'
 
-const { Title } = Typography;
+const { Title, Link } = Typography;
 const { Option } = Select;
 
 
@@ -235,9 +235,9 @@ const BarangayOfficialForm = (props) => {
   return (
     <div>
       <p>
-        <a href="#!" onClick={() => backToTable()}>
+        <Link onClick={() => backToTable()}>
           <ArrowLeftOutlined /> Back to list of barangay officials
-        </a>
+        </Link>
       </p>
       <Title style={{textAlign: "center"}}>
         {(props.formType=="create" ? "ADD" : "EDIT")} BARANGAY OFFICIAL

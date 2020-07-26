@@ -1,8 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { connect } from 'react-redux';
-import Link from 'next/link'
 import API from '../../../api'
-import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, SearchOutlined, PlusOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
 import { Table, Typography, Divider, Pagination, Modal, Select, Input, Button } from 'antd';
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import _isEmpty from 'lodash/isEmpty'
@@ -11,8 +10,8 @@ import isEmpty from 'lodash/isEmpty';
 
 const { Option } = Select;
 const { Search } = Input;
-const { Title } = Typography;
 const { confirm } = Modal;
+const { Title, Link } = Typography;
 
 function mapStateToProps(state) {
   return {
@@ -27,6 +26,7 @@ const ResidentTable = (props) => {
   }, []);
   
   const [loading, setLoading] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
   const [pagination, setPagination] = useState({});
   const [barangayOfficials, setBarangayOfficials] = useState([]);
   const [searchData, setSearchData] = useState({});
@@ -161,6 +161,22 @@ const ResidentTable = (props) => {
     });
   }
 
+  const toggleStatusUser = (barangayOfficial) => {
+    setToggleLoading(true);
+    barangayOfficial.is_current = !barangayOfficial.is_current;
+    API.BarangayOfficial.update(barangayOfficial,barangayOfficial.id)
+    .then(res => {
+      setToggleLoading(false);
+      getBarangayOfficials();
+    })
+    .catch(err => {
+      setToggleLoading(false);
+    })
+    .then(res => {
+      setToggleLoading(false);
+    });
+  }
+
   const dataSource = barangayOfficials;
   
   const columns = [
@@ -207,15 +223,25 @@ const ResidentTable = (props) => {
       key: 'contact_number',
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text, record) => (
+        <span>
+          <Button onClick={() => {toggleStatusUser(record)} } disabled={toggleLoading} loading={toggleLoading} >
+            { record.is_current ? (<span><StarFilled /> Current</span>) : (<span><StarOutlined /> Noncurrent</span>) }
+          </Button>
+        </span>
+      ),
+    },
+    {
       title: 'Action',
       key: 'action',
       render: (text, record) => (
         <span>
-          <a href="#!" onClick={ () => editBarangayOfficial(record) }>Edit</a>
+          <Link onClick={() => {editBarangayOfficial(record)}}>Edit</Link>
           &nbsp;|&nbsp;
-          <a href="#!" onClick={ () => confirmDeleteBarangayOfficial(record) }>
-            Delete
-          </a>
+          <Link onClick={() => {confirmDeleteBarangayOfficial(record)}}>Delete</Link>
         </span>
       ),
     }

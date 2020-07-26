@@ -11,7 +11,7 @@ import moment from 'moment';
 import queryString from "query-string";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 
-const { Title } = Typography;
+const { Title, Link } = Typography;
 const { Option } = Select;
 
 function mapStateToProps(state) {
@@ -26,7 +26,7 @@ function mapStateToProps(state) {
 
 const ResidentForm = (props) => {
   const [formType, setformType] = useState("create");
-  const [formData, setFormData] = useState({is_registered_voter:"YES"});
+  const [formData, setFormData] = useState({});
   const [submit, setSubmit] = useState(false);
   const formRef = React.useRef();
   const router = useRouter()
@@ -195,15 +195,15 @@ const ResidentForm = (props) => {
   return (
     <div>
       <p>
-        <a href="#!" onClick={() => backToTable()}>
+        <Link onClick={() => backToTable()}>
           <ArrowLeftOutlined /> Back to list of residents
-        </a>
+        </Link>
       </p>
       <Title style={{textAlign: "center"}}>
         {(props.formType=="create" ? "ADD" : "EDIT")} RESIDENT
       </Title>
       <Divider />
-      <Form {...layout} ref={formRef} layout="horizontal" name="basic" initialValues={{ is_registered_voter: 'YES' }} onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
+      <Form {...layout} ref={formRef} layout="horizontal" name="basic" onValuesChange={setFormFields} onFinish={formSubmit} onFinishFailed={onFinishFailed}>
       <div className="row">
         <div className="col-md-6 col-lg-4">
             <Form.Item label="Last Name" name="last_name" hasFeedback {...displayErrors('last_name')}>
