@@ -16,7 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.1.9",
     "antd": "^4.0.2",
     "autoprefixer": "^9.7.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.4.1",
     "dotenv": "^8.2.0",
     "local-storage": "^2.0.0",
